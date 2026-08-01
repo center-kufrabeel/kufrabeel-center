@@ -177,10 +177,6 @@ h1,h2,h3,h4{ font-weight:800; }
   display:inline-block; background:rgba(255,255,255,0.12); padding:6px 16px; border-radius:30px;
   font-size:0.85rem; font-weight:700; color:var(--color-gold); margin-bottom:18px;
 }
-.hero-meta{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
-.hero-meta .hero-eyebrow{margin-bottom:0;}
-.live-datetime{display:inline-flex;align-items:center;gap:9px;padding:6px 14px;border-radius:30px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.88);font-size:.78rem;font-weight:700;direction:rtl;}
-.live-datetime .clock-value{color:var(--color-gold);font-variant-numeric:tabular-nums;direction:ltr;}
 .hero h1{ font-size:clamp(2rem,4.2vw,3.2rem); margin-bottom:16px; }
 .hero-tagline{ font-size:clamp(1.05rem,2vw,1.3rem); color:rgba(255,255,255,0.9); margin-bottom:28px; max-width:560px; }
 .hero-ayah{
@@ -247,15 +243,13 @@ h1,h2,h3,h4{ font-weight:800; }
 
 /* قسم التلاوة والتجويد */
 .tajweed-section{background:var(--color-white);}
-.tajweed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:course;}
+.tajweed-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:course;}
 .tajweed-card{position:relative;background:linear-gradient(180deg,#fff,var(--color-primary-soft));border:1px solid var(--color-border);border-radius:18px;padding:28px 22px;overflow:hidden;transition:transform var(--transition),box-shadow var(--transition);}
 .tajweed-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
 .tajweed-card::after{counter-increment:course;content:counter(course,decimal-leading-zero);position:absolute;left:14px;bottom:-13px;font-size:4.4rem;font-weight:800;color:rgba(15,77,63,.06);line-height:1}
 .tajweed-icon{width:58px;height:58px;border-radius:16px;background:var(--color-primary);color:#fff;display:grid;place-items:center;font-size:1.6rem;margin-bottom:18px;}
 .tajweed-card h3{color:var(--color-primary);font-size:1.08rem;margin-bottom:8px}.tajweed-card p{color:var(--color-text-soft);font-size:.91rem;position:relative;z-index:1}
 .tajweed-card.ijazah{background:linear-gradient(145deg,var(--color-primary),var(--color-primary-light));border-color:transparent}.tajweed-card.ijazah h3{color:#fff}.tajweed-card.ijazah p{color:rgba(255,255,255,.82)}.tajweed-card.ijazah .tajweed-icon{background:var(--color-gold);color:var(--color-primary)}.tajweed-card.ijazah::after{color:rgba(255,255,255,.08)}
-.tajweed-more{margin-top:30px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 28px;border-radius:18px;background:linear-gradient(135deg,var(--color-primary),var(--color-primary-light));color:#fff;box-shadow:var(--shadow-md);}
-.tajweed-more h3{font-size:1.15rem;margin-bottom:4px}.tajweed-more p{font-size:.9rem;color:rgba(255,255,255,.78)}.tajweed-more .btn{background:var(--color-gold);color:var(--color-primary);justify-content:center;}
 
 /* لوحة الإحصاءات التفصيلية */
 .impact-stats{background:linear-gradient(145deg,#0b3c32,var(--color-primary-light));color:#fff;position:relative;overflow:hidden;}
@@ -268,7 +262,6 @@ h1,h2,h3,h4{ font-weight:800; }
 .stats-note{text-align:center;margin-top:24px;color:rgba(255,255,255,.6);font-size:.82rem}
 @media(max-width:950px){.tajweed-grid{grid-template-columns:1fr 1fr}.impact-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.tajweed-grid{grid-template-columns:1fr}.impact-card{padding:22px}.impact-total{font-size:1.9rem}}
-@media(max-width:620px){.hero-meta{justify-content:center}.live-datetime{width:100%;justify-content:center}.tajweed-more{flex-direction:column;text-align:center;padding:22px 18px}.tajweed-more .btn{width:100%}}
 
 /* ============================================================
    6) قسم الكادر
@@ -545,12 +538,7 @@ main{display:flex;flex-direction:column;min-width:0;}
   <div class="pattern-bg" aria-hidden="true"></div>
   <div class="container hero-grid">
     <div>
-      <div class="hero-meta">
-        <span class="hero-eyebrow">مركز قرآني تربوي منذ عام 1999</span>
-        <span class="live-datetime" aria-label="التاريخ والوقت الحاليان">
-          <span aria-hidden="true">◷</span><span id="liveDate"></span><span class="clock-value" id="liveClock"></span>
-        </span>
-      </div>
+      <span class="hero-eyebrow">مركز قرآني تربوي منذ عام 1999</span>
       <h1>مركز كفرأبيل القرآني</h1>
       <p class="hero-tagline">نبني جيلًا يحمل القرآن حفظًا، خُلُقًا، وعملًا.</p>
       <p class="hero-ayah">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</p>
@@ -661,25 +649,23 @@ main{display:flex;flex-direction:column;min-width:0;}
       <article class="tajweed-card reveal">
         <div class="tajweed-icon" aria-hidden="true">أ</div>
         <h3>الدورة التمهيدية</h3>
-        <p>البداية المناسبة لبناء أساس صحيح في التلاوة والتجويد.</p>
+        <p>تأسيس أحكام التلاوة ومخارج الحروف، ومعالجة الأخطاء الأساسية بأسلوب مبسط.</p>
       </article>
       <article class="tajweed-card reveal">
         <div class="tajweed-icon" aria-hidden="true">ب</div>
         <h3>الدورة المتوسطة</h3>
-        <p>دراسة أوسع للأحكام مع تطبيق عملي منتظم أثناء التلاوة.</p>
+        <p>توسّع في أحكام التجويد مع تدريب عملي منتظم يرفع مستوى القراءة والأداء.</p>
       </article>
       <article class="tajweed-card reveal">
         <div class="tajweed-icon" aria-hidden="true">ج</div>
         <h3>الدورة المتقدمة</h3>
-        <p>تعمّق في علوم التلاوة وأصول رواية حفص والوقف والابتداء.</p>
+        <p>إتقان التفاصيل الدقيقة في الأحكام، وتصحيح الأداء، والتهيئة لمسار الإجازة.</p>
       </article>
-    </div>
-    <div class="tajweed-more reveal">
-      <div>
-        <h3>اكتشف المسار الكامل للتلاوة والتجويد</h3>
-        <p>تعرّف إلى كادر التدريس، جميع الدورات، وحمّل ملفات المحتوى التعليمية.</p>
-      </div>
-      <a class="btn" href="tajweed.html">استكشف جميع الدورات</a>
+      <article class="tajweed-card ijazah reveal">
+        <div class="tajweed-icon" aria-hidden="true">📜</div>
+        <h3>الإجازة برواية حفص عن عاصم</h3>
+        <p>مسار متخصص للقراءة والإتقان على أهل الاختصاص وصولًا إلى الإجازة بالسند.</p>
+      </article>
     </div>
   </div>
 </section>
@@ -1144,21 +1130,6 @@ document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el
    6) السنة الحالية في الفوتر
    ============================================================ */
 document.getElementById('year').textContent = new Date().getFullYear();
-
-/* الساعة والتاريخ في واجهة الموقع — بتوقيت الأردن */
-const liveDate = document.getElementById('liveDate');
-const liveClock = document.getElementById('liveClock');
-function updateLiveDateTime() {
-  const now = new Date();
-  liveDate.textContent = new Intl.DateTimeFormat('ar-JO', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Amman'
-  }).format(now);
-  liveClock.textContent = new Intl.DateTimeFormat('ar-JO', {
-    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'Asia/Amman'
-  }).format(now);
-}
-updateLiveDateTime();
-setInterval(updateLiveDateTime, 1000);
 
 /* ============================================================
    7) صور السلايد شو
