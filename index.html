@@ -77,7 +77,9 @@ body{
   color: var(--color-text);
   line-height: 1.8;
   overflow-x: hidden;
+  width:100%;
 }
+html{ overflow-x:hidden; width:100%; }
 img{ max-width:100%; display:block; }
 a{ text-decoration:none; color:inherit; }
 ul{ list-style:none; }
@@ -143,7 +145,7 @@ h1,h2,h3,h4{ font-weight:800; }
 
 @media (max-width: 860px){
   .nav-links{
-    position:fixed; inset-inline-end:0; top:0; height:100vh; width:78%; max-width:320px;
+    position:fixed; right:0; top:0; height:100dvh; width:min(82vw,320px);
     background:var(--color-white); flex-direction:column; align-items:flex-start;
     padding:110px 32px 32px; gap:26px; box-shadow:-6px 0 24px rgba(0,0,0,0.08);
     transform: translateX(100%); transition: transform var(--transition); z-index:1050;
@@ -152,6 +154,9 @@ h1,h2,h3,h4{ font-weight:800; }
   .nav-links.open{ transform: translateX(0); }
   .nav-links a{ font-size:1.1rem; }
   .menu-toggle{ display:flex; }
+  .menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:1020;opacity:0;visibility:hidden;transition:.25s;}
+  .menu-backdrop.open{opacity:1;visibility:visible;}
+  body.menu-open{overflow:hidden;}
 }
 
 /* ============================================================
@@ -230,6 +235,28 @@ h1,h2,h3,h4{ font-weight:800; }
 
 @media (max-width: 950px){ .about-cards{ grid-template-columns:1fr 1fr; } }
 @media (max-width: 560px){ .about-cards{ grid-template-columns:1fr; } }
+
+/* قسم التلاوة والتجويد */
+.tajweed-section{background:var(--color-white);}
+.tajweed-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:course;}
+.tajweed-card{position:relative;background:linear-gradient(180deg,#fff,var(--color-primary-soft));border:1px solid var(--color-border);border-radius:18px;padding:28px 22px;overflow:hidden;transition:transform var(--transition),box-shadow var(--transition);}
+.tajweed-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+.tajweed-card::after{counter-increment:course;content:counter(course,decimal-leading-zero);position:absolute;left:14px;bottom:-13px;font-size:4.4rem;font-weight:800;color:rgba(15,77,63,.06);line-height:1}
+.tajweed-icon{width:58px;height:58px;border-radius:16px;background:var(--color-primary);color:#fff;display:grid;place-items:center;font-size:1.6rem;margin-bottom:18px;}
+.tajweed-card h3{color:var(--color-primary);font-size:1.08rem;margin-bottom:8px}.tajweed-card p{color:var(--color-text-soft);font-size:.91rem;position:relative;z-index:1}
+.tajweed-card.ijazah{background:linear-gradient(145deg,var(--color-primary),var(--color-primary-light));border-color:transparent}.tajweed-card.ijazah h3{color:#fff}.tajweed-card.ijazah p{color:rgba(255,255,255,.82)}.tajweed-card.ijazah .tajweed-icon{background:var(--color-gold);color:var(--color-primary)}.tajweed-card.ijazah::after{color:rgba(255,255,255,.08)}
+
+/* لوحة الإحصاءات التفصيلية */
+.impact-stats{background:linear-gradient(145deg,#0b3c32,var(--color-primary-light));color:#fff;position:relative;overflow:hidden;}
+.impact-stats .pattern-bg{opacity:.08;background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 1px,transparent 42px),repeating-linear-gradient(-45deg,#fff 0,#fff 1px,transparent 1px,transparent 42px)}
+.impact-stats .container{position:relative;z-index:1}.impact-stats .section-tag{background:rgba(255,255,255,.12);color:var(--color-gold)}.impact-stats .section-title{color:#fff}.impact-stats .section-desc{color:rgba(255,255,255,.72)}
+.impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.impact-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:28px;backdrop-filter:blur(8px);}
+.impact-card-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:22px}.impact-card-head h3{font-size:1.05rem}.impact-total{font-size:2.25rem;font-weight:800;color:var(--color-gold);line-height:1}
+.gender-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gender-stat{background:rgba(255,255,255,.1);border-radius:13px;padding:15px;text-align:center}.gender-stat strong{font-size:1.45rem;display:block;color:#fff}.gender-stat span{font-size:.82rem;color:rgba(255,255,255,.72)}
+.stats-note{text-align:center;margin-top:24px;color:rgba(255,255,255,.6);font-size:.82rem}
+@media(max-width:950px){.tajweed-grid{grid-template-columns:1fr 1fr}.impact-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.tajweed-grid{grid-template-columns:1fr}.impact-card{padding:22px}.impact-total{font-size:1.9rem}}
 
 /* ============================================================
    6) قسم الكادر
@@ -373,6 +400,55 @@ a:focus-visible, button:focus-visible{
   background:linear-gradient(180deg,#fffdf7 0%,var(--color-white) 100%);
 }
 .staff-card.director .role{ color:var(--color-primary); }
+
+/* السلايد شو الرئيسي */
+.slider-section{order:2;padding:64px 0 72px;background:var(--color-ivory);}
+.slider-section .center-heading{margin-bottom:28px;}
+.home-slider{position:relative;z-index:2;margin:0 auto;width:100%;}
+.slider-viewport{overflow:hidden;border-radius:22px;box-shadow:0 18px 46px rgba(0,0,0,.28);touch-action:pan-y;background:#0b392f;}
+.slider-track{display:flex;direction:ltr;transition:transform .55s ease;}
+.slider-slide{min-width:100%;aspect-ratio:16/9;position:relative;background:#0b392f;}
+.slider-slide img{width:100%;height:100%;object-fit:contain;object-position:center;}
+.slider-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.9);color:var(--color-primary);font-size:1.65rem;display:grid;place-items:center;box-shadow:var(--shadow-sm);}
+.slider-arrow:hover{background:#fff;transform:translateY(-50%) scale(1.06);}
+.slider-arrow.prev{left:14px}.slider-arrow.next{right:14px}
+.slider-dots{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:16px;direction:ltr;}
+.slider-dot{width:10px;height:10px;border-radius:50%;background:#b8c9c2;transition:.25s;}
+.slider-dot.active{width:28px;border-radius:10px;background:var(--color-gold);}
+
+/* تبويبات الكادر */
+.staff-tabs{display:flex;justify-content:center;gap:10px;margin:0 auto 32px;padding:6px;background:var(--color-primary-soft);border-radius:14px;width:max-content;max-width:100%;}
+.staff-tab{padding:10px 28px;border-radius:10px;color:var(--color-primary);font-weight:800;}
+.staff-tab.active{background:var(--color-primary);color:#fff;box-shadow:var(--shadow-sm);}
+.staff-panel[hidden]{display:none;}
+.female-avatar{width:112px;height:112px;border-radius:50%;margin:0 auto 16px;background:#f4eee5;border:4px solid #ead9bd;display:grid;place-items:center;overflow:hidden;}
+.female-avatar svg{width:78%;height:78%;}
+
+/* ترتيب الصفحة الرئيسية */
+main{display:flex;flex-direction:column;min-width:0;}
+#home{order:1}#about{order:3}#tajweed{order:4}#impact{order:5}#projects{order:6}#staff{order:7}#contact{order:8}
+#activities,#register{display:none;}
+.project-card{color:inherit;cursor:pointer;}
+.exam-cta{margin-top:38px;background:linear-gradient(135deg,var(--color-primary),var(--color-primary-light));color:#fff;border-radius:22px;padding:34px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px;box-shadow:var(--shadow-md);}
+.exam-cta-icon{width:76px;height:76px;border-radius:20px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:2.3rem;}
+.exam-cta h3{font-size:1.35rem;margin-bottom:5px}.exam-cta p{color:rgba(255,255,255,.82)}
+.exam-cta .btn{background:var(--color-gold);color:var(--color-primary);justify-content:center;}
+
+@media(max-width:620px){
+  :root{--header-height:68px}
+  section{padding:62px 0}.container,.nav-wrap{padding-inline:16px}
+  .brand-name{font-size:.88rem}.brand img{height:42px}
+  .hero{padding-top:calc(var(--header-height) + 38px);padding-bottom:58px;text-align:center}
+  .hero-grid{gap:28px}.hero-buttons{justify-content:center}.hero-ayah{border:0;padding:0}
+  .slider-section{padding:48px 0 54px}.slider-slide{aspect-ratio:4/3}.slider-arrow{width:40px;height:40px;font-size:1.35rem}
+  .slider-arrow.prev{left:8px}.slider-arrow.next{right:8px}
+  .staff-grid{grid-template-columns:1fr 1fr;gap:12px}.staff-card{padding:22px 8px;min-width:0}
+  .staff-card h3{font-size:.9rem}.female-avatar,.avatar-photo{width:88px;height:88px}
+  .btn{width:100%;justify-content:center;padding:12px 16px;white-space:normal;text-align:center}
+  .contact-phone{font-size:1.05rem;padding:16px}.contact-buttons{display:grid}
+  .exam-cta{grid-template-columns:auto 1fr;padding:24px 18px;gap:16px}.exam-cta .btn{grid-column:1/-1}.exam-cta-icon{width:60px;height:60px;font-size:1.8rem}
+}
+@media(max-width:380px){.staff-grid{grid-template-columns:1fr}.staff-tabs{width:100%}.staff-tab{flex:1;padding-inline:10px}}
 .project-image{
   width:100%; height:235px; object-fit:cover; object-position:center; display:block;
   border-bottom:4px solid var(--color-gold);
@@ -431,10 +507,10 @@ a:focus-visible, button:focus-visible{
     <nav class="nav-links" id="navLinks" aria-label="روابط التنقل الرئيسية">
       <a href="#home" class="nav-link active">الرئيسية</a>
       <a href="#about" class="nav-link">عن المركز</a>
+      <a href="#tajweed" class="nav-link">التلاوة والتجويد</a>
+      <a href="#projects" class="nav-link">المجموعات</a>
       <a href="#staff" class="nav-link">الكادر</a>
-      <a href="#projects" class="nav-link">المشاريع والإنجازات</a>
-      <a href="#activities" class="nav-link">الأنشطة</a>
-      <a href="#register" class="nav-link">التسجيل</a>
+      <a href="exam-system.html" class="nav-link">نظام الاختبارات</a>
       <a href="#contact" class="nav-link">تواصل معنا</a>
     </nav>
 
@@ -443,6 +519,7 @@ a:focus-visible, button:focus-visible{
     </button>
   </div>
 </header>
+<div class="menu-backdrop" id="menuBackdrop" aria-hidden="true"></div>
 
 <main>
 
@@ -465,25 +542,45 @@ a:focus-visible, button:focus-visible{
 
     <div class="hero-stats-card reveal">
       <h3>المركز بالأرقام</h3>
-      <p class="hero-stats-note">أرقام مبنية على المشاريع القرآنية الحالية المذكورة في الموقع.</p>
+      <p class="hero-stats-note">لمحة عن أثر المركز — الأعداد الحالية تجريبية لحين اعتماد الإحصاء النهائي.</p>
       <div class="stats-grid">
         <div class="stat-item">
-          <span class="num">1999</span>
-          <span class="label">تأسس عام</span>
+          <span class="num" data-count="745">0</span>
+          <span class="label">إجمالي الملتحقين</span>
         </div>
         <div class="stat-item">
-          <span class="num" data-count="3">0</span>
-          <span class="label">مشاريع قرآنية</span>
+          <span class="num" data-count="400">0</span>
+          <span class="label">النادي الصيفي</span>
         </div>
         <div class="stat-item">
-          <span class="num" data-count="35">0</span>
-          <span class="label">طالبًا في المشاريع</span>
+          <span class="num" data-count="230">0</span>
+          <span class="label">النادي الدائم</span>
         </div>
         <div class="stat-item">
-          <span class="num" data-count="9">0</span>
-          <span class="label">من الحفاظ</span>
+          <span class="num" data-count="115">0</span>
+          <span class="label">دورات التجويد</span>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     معرض صور المركز — قسم مستقل أسفل واجهة الترحيب
+     ============================================================ -->
+<section class="slider-section" id="gallery">
+  <div class="container">
+    <div class="center-heading">
+      <span class="section-tag">من أجواء المركز</span>
+      <h2 class="section-title">معرض الصور</h2>
+    </div>
+    <div class="home-slider" id="homeSlider" aria-label="معرض صور المركز">
+      <div class="slider-viewport">
+        <div class="slider-track" id="sliderTrack"></div>
+      </div>
+      <button class="slider-arrow prev" id="sliderPrev" type="button" aria-label="الصورة السابقة">‹</button>
+      <button class="slider-arrow next" id="sliderNext" type="button" aria-label="الصورة التالية">›</button>
+      <div class="slider-dots" id="sliderDots" aria-label="اختيار صورة من المعرض"></div>
     </div>
   </div>
 </section>
@@ -535,6 +632,79 @@ a:focus-visible, button:focus-visible{
 </section>
 
 <!-- ============================================================
+     قسم التلاوة والتجويد
+     ============================================================ -->
+<section id="tajweed" class="tajweed-section">
+  <div class="container">
+    <div class="center-heading" style="max-width:760px;">
+      <span class="section-tag">تعلم بإتقان</span>
+      <h2 class="section-title">التلاوة والتجويد في المركز</h2>
+      <p class="section-desc">مسار متدرج يبدأ بتأسيس التلاوة الصحيحة، وينتقل بالطالب خطوةً بخطوة نحو الإتقان والإجازة.</p>
+    </div>
+    <div class="tajweed-grid">
+      <article class="tajweed-card reveal">
+        <div class="tajweed-icon" aria-hidden="true">أ</div>
+        <h3>الدورة التمهيدية</h3>
+        <p>تأسيس أحكام التلاوة ومخارج الحروف، ومعالجة الأخطاء الأساسية بأسلوب مبسط.</p>
+      </article>
+      <article class="tajweed-card reveal">
+        <div class="tajweed-icon" aria-hidden="true">ب</div>
+        <h3>الدورة المتوسطة</h3>
+        <p>توسّع في أحكام التجويد مع تدريب عملي منتظم يرفع مستوى القراءة والأداء.</p>
+      </article>
+      <article class="tajweed-card reveal">
+        <div class="tajweed-icon" aria-hidden="true">ج</div>
+        <h3>الدورة المتقدمة</h3>
+        <p>إتقان التفاصيل الدقيقة في الأحكام، وتصحيح الأداء، والتهيئة لمسار الإجازة.</p>
+      </article>
+      <article class="tajweed-card ijazah reveal">
+        <div class="tajweed-icon" aria-hidden="true">📜</div>
+        <h3>الإجازة برواية حفص عن عاصم</h3>
+        <p>مسار متخصص للقراءة والإتقان على أهل الاختصاص وصولًا إلى الإجازة بالسند.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     إحصاءات المركز — الأرقام الحالية تجريبية
+     ============================================================ -->
+<section id="impact" class="impact-stats">
+  <div class="pattern-bg" aria-hidden="true"></div>
+  <div class="container">
+    <div class="center-heading" style="max-width:760px;">
+      <span class="section-tag">أثرٌ يتجدد</span>
+      <h2 class="section-title">المركز بالأرقام</h2>
+      <p class="section-desc">أعداد الملتحقين ببرامج المركز، موزعة بوضوح بين الطلاب والطالبات.</p>
+    </div>
+    <div class="impact-grid">
+      <article class="impact-card reveal">
+        <div class="impact-card-head"><h3>النادي الصيفي</h3><span class="impact-total" data-count="400">0</span></div>
+        <div class="gender-stats">
+          <div class="gender-stat"><strong data-count="150">0</strong><span>طلاب ذكور</span></div>
+          <div class="gender-stat"><strong data-count="250">0</strong><span>طالبات إناث</span></div>
+        </div>
+      </article>
+      <article class="impact-card reveal">
+        <div class="impact-card-head"><h3>النادي الدائم</h3><span class="impact-total" data-count="230">0</span></div>
+        <div class="gender-stats">
+          <div class="gender-stat"><strong data-count="100">0</strong><span>طلاب ذكور</span></div>
+          <div class="gender-stat"><strong data-count="130">0</strong><span>طالبات إناث</span></div>
+        </div>
+      </article>
+      <article class="impact-card reveal">
+        <div class="impact-card-head"><h3>دورات التلاوة والتجويد</h3><span class="impact-total" data-count="115">0</span></div>
+        <div class="gender-stats">
+          <div class="gender-stat"><strong data-count="50">0</strong><span>طلاب ذكور</span></div>
+          <div class="gender-stat"><strong data-count="65">0</strong><span>طالبات إناث</span></div>
+        </div>
+      </article>
+    </div>
+    <p class="stats-note">إجمالي الملتحقين في البرامج الثلاثة: 745 طالبًا وطالبة — 300 من الذكور و445 من الإناث.</p>
+  </div>
+</section>
+
+<!-- ============================================================
      قسم الكادر
      ============================================================ -->
 <section id="staff" style="background:var(--color-white);">
@@ -545,6 +715,12 @@ a:focus-visible, button:focus-visible{
       <p class="section-desc">نخبة من القائمين على إدارة البرامج القرآنية والتربوية ومتابعة طلبة المركز.</p>
     </div>
 
+    <div class="staff-tabs" role="tablist" aria-label="اختيار كادر المركز">
+      <button class="staff-tab active" id="maleTab" type="button" role="tab" aria-selected="true" aria-controls="maleStaff">كادر الذكور</button>
+      <button class="staff-tab" id="femaleTab" type="button" role="tab" aria-selected="false" aria-controls="femaleStaff">كادر الإناث</button>
+    </div>
+
+    <div class="staff-panel" id="maleStaff" role="tabpanel" aria-labelledby="maleTab">
     <div class="staff-grid">
       <div class="staff-card director reveal">
         <img class="avatar-photo" src="assets/images/staff-ibrahim.jpg" alt="إبراهيم الخطيب - مدير المركز" loading="lazy">
@@ -597,6 +773,11 @@ a:focus-visible, button:focus-visible{
         <span class="role">معلم</span>
       </div>
     </div>
+    </div>
+
+    <div class="staff-panel" id="femaleStaff" role="tabpanel" aria-labelledby="femaleTab" hidden>
+      <div class="staff-grid" id="femaleStaffGrid"></div>
+    </div>
   </div>
 </section>
 
@@ -607,12 +788,12 @@ a:focus-visible, button:focus-visible{
   <div class="container">
     <div class="center-heading" style="max-width:700px;">
       <span class="section-tag">إنجازاتنا</span>
-      <h2 class="section-title">المشاريع والإنجازات</h2>
-      <p class="section-desc">إحصائيات المشاريع القرآنية الحالية القائمة في المركز.</p>
+      <h2 class="section-title">المجموعات القرآنية</h2>
+      <p class="section-desc">اضغط على أي مجموعة للاطلاع على معلوماتها وأنشطتها وإنجازاتها.</p>
     </div>
 
     <div class="projects-grid">
-      <div class="project-card reveal">
+      <a class="project-card reveal" href="group.html?id=almanar" aria-label="فتح صفحة مجموعة المنار القرآنية">
         <img class="project-image" src="assets/images/project-al-manar.jpeg" alt="طلاب مشروع المنار القرآني" loading="lazy">
         <div class="project-head"><h3>مشروع المنار القرآني</h3></div>
         <div class="project-body">
@@ -622,9 +803,9 @@ a:focus-visible, button:focus-visible{
             <div class="stat-item"><span class="num" data-count="8">0</span><span class="label">من الحفاظ</span></div>
           </div>
         </div>
-      </div>
+      </a>
 
-      <div class="project-card reveal">
+      <a class="project-card reveal" href="group.html?id=almukhbiteen" aria-label="فتح صفحة مجموعة المخبتين القرآنية">
         <img class="project-image" src="assets/images/project-al-mukhbiteen.jpeg" alt="طلاب مشروع المخبتين القرآني" loading="lazy">
         <div class="project-head"><h3>مشروع المخبتين القرآني</h3></div>
         <div class="project-body">
@@ -635,9 +816,9 @@ a:focus-visible, button:focus-visible{
             <div class="stat-item" style="grid-column:1/-1;"><span class="num" data-count="14">0</span><span class="label">متوسط الحفظ (جزءًا)</span></div>
           </div>
         </div>
-      </div>
+      </a>
 
-      <div class="project-card no-photo reveal">
+      <a class="project-card no-photo reveal" href="group.html?id=faseeroo" aria-label="فتح صفحة مجموعة فسيروا القرآنية">
         <div class="project-visual" aria-hidden="true">📖</div>
         <div class="project-head"><h3>مشروع فسيروا القرآني</h3></div>
         <div class="project-body">
@@ -647,7 +828,16 @@ a:focus-visible, button:focus-visible{
             <div class="stat-item"><span class="num" data-count="7">0</span><span class="label">متوسط الحفظ (أجزاء)</span></div>
           </div>
         </div>
+      </a>
+    </div>
+
+    <div class="exam-cta reveal">
+      <div class="exam-cta-icon" aria-hidden="true">📝</div>
+      <div>
+        <h3>نظام الاختبارات والسحب الإلكتروني</h3>
+        <p>لإجراء اختبار قرآني أو اختيار مواضع عشوائية من القرآن الكريم، انتقل إلى منصة الاختبارات الخاصة بالمركز.</p>
       </div>
+      <a class="btn" href="exam-system.html" aria-label="الدخول إلى نظام الاختبارات">الدخول إلى نظام الاختبارات</a>
     </div>
   </div>
 </section>
@@ -683,7 +873,7 @@ a:focus-visible, button:focus-visible{
           <p>تطبيق يضم مجموعة من الأنشطة المقترحة التي يمكن تنفيذها خلال أوقات الدوام، للمساعدة في تنظيم الوقت وتقديم أفكار متنوعة وهادفة للطلبة.</p>
           <span class="app-meta">ملف APK لأجهزة Android — الحجم نحو 286 ميجابايت</span>
         </div>
-        <a class="btn" href="https://github.com/center-kufrabeel/kufrabeel-center/releases/latest/download/app-release.apk" download aria-label="تحميل تطبيق الأنشطة المقترحة خلال الدوام لأجهزة أندرويد">تحميل تطبيق الأنشطة</a>
+        <a class="btn" href="downloads/app-release.apk" download aria-label="تحميل تطبيق الأنشطة المقترحة خلال الدوام لأجهزة أندرويد">تحميل تطبيق الأنشطة</a>
       </div>
 
       <div class="activity-placeholder reveal">
@@ -797,6 +987,7 @@ a:focus-visible, button:focus-visible{
         <ul>
           <li><a href="#home">الرئيسية</a></li>
           <li><a href="#about">عن المركز</a></li>
+          <li><a href="#tajweed">التلاوة والتجويد</a></li>
           <li><a href="#staff">الكادر</a></li>
           <li><a href="#projects">المشاريع والإنجازات</a></li>
           <li><a href="#activities">الأنشطة</a></li>
@@ -830,20 +1021,25 @@ a:focus-visible, button:focus-visible{
    ============================================================ */
 const menuToggle = document.getElementById('menuToggle');
 const navLinks = document.getElementById('navLinks');
+const menuBackdrop = document.getElementById('menuBackdrop');
+
+function setMenu(open) {
+  navLinks.classList.toggle('open', open);
+  menuToggle.classList.toggle('open', open);
+  menuBackdrop.classList.toggle('open', open);
+  document.body.classList.toggle('menu-open', open);
+  menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
 
 menuToggle.addEventListener('click', () => {
-  const isOpen = navLinks.classList.toggle('open');
-  menuToggle.classList.toggle('open', isOpen);
-  menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  setMenu(!navLinks.classList.contains('open'));
 });
 
 navLinks.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    navLinks.classList.remove('open');
-    menuToggle.classList.remove('open');
-    menuToggle.setAttribute('aria-expanded', 'false');
-  });
+  link.addEventListener('click', () => setMenu(false));
 });
+menuBackdrop.addEventListener('click', () => setMenu(false));
+document.addEventListener('keydown', event => { if (event.key === 'Escape') setMenu(false); });
 
 /* ============================================================
    2) ظل الشريط العلوي عند التمرير + زر العودة للأعلى
@@ -929,6 +1125,112 @@ document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el
    6) السنة الحالية في الفوتر
    ============================================================ */
 document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ============================================================
+   7) صور السلايد شو
+   لإضافة صورة: ضعها داخل assets/images/slider ثم أضف مسارها هنا.
+   للحذف: احذف السطر الخاص بها من هذه القائمة.
+   ============================================================ */
+const sliderImages = [
+  { src: 'assets/images/slider/slide-1.jpg', alt: 'أنشطة مركز كفرأبيل القرآني' },
+  { src: 'assets/images/slider/slide-2.jpg', alt: 'طلاب المركز في نشاط قرآني' },
+  { src: 'assets/images/slider/slide-3.jpg', alt: 'جانب من برامج المركز' },
+  { src: 'assets/images/slider/slide-4.jpg', alt: 'كادر مركز كفرأبيل القرآني' },
+  { src: 'assets/images/slider/slide-5.jpg', alt: 'فعاليات مركز كفرأبيل القرآني' }
+];
+
+const sliderTrack = document.getElementById('sliderTrack');
+const sliderDots = document.getElementById('sliderDots');
+let currentSlide = 0;
+let sliderTimer;
+let touchStartX = 0;
+
+sliderImages.forEach((image, index) => {
+  const slide = document.createElement('div');
+  slide.className = 'slider-slide';
+  slide.innerHTML = `<img src="${image.src}" alt="${image.alt}" ${index ? 'loading="lazy"' : ''}>`;
+  sliderTrack.appendChild(slide);
+  const dot = document.createElement('button');
+  dot.className = 'slider-dot';
+  dot.type = 'button';
+  dot.setAttribute('aria-label', `عرض الصورة ${index + 1}`);
+  dot.addEventListener('click', () => showSlide(index, true));
+  sliderDots.appendChild(dot);
+});
+
+function showSlide(index, manual = false) {
+  currentSlide = (index + sliderImages.length) % sliderImages.length;
+  sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+  [...sliderDots.children].forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
+  if (manual) restartSlider();
+}
+function restartSlider() {
+  clearInterval(sliderTimer);
+  sliderTimer = setInterval(() => showSlide(currentSlide + 1), 5000);
+}
+document.getElementById('sliderPrev').addEventListener('click', () => showSlide(currentSlide - 1, true));
+document.getElementById('sliderNext').addEventListener('click', () => showSlide(currentSlide + 1, true));
+const sliderViewport = document.querySelector('.slider-viewport');
+sliderViewport.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+sliderViewport.addEventListener('touchend', e => {
+  const distance = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(distance) > 45) showSlide(currentSlide + (distance < 0 ? 1 : -1), true);
+}, { passive: true });
+showSlide(0);
+restartSlider();
+
+/* ============================================================
+   8) الكادر النسائي — الاسم الأول واسم العائلة فقط
+   جميع البطاقات تستخدم الشعار النسائي الموحد نفسه.
+   ============================================================ */
+const femaleStaffMembers = [
+  { name: 'خديجة مقابلة', role: 'مساعدة مدير' },
+  { name: 'ذكرى مقابلة', role: 'معلمة' },
+  { name: 'أسماء الفقيه', role: 'معلمة' },
+  { name: 'مواهب بني حسن', role: 'معلمة' },
+  { name: 'آسيا زقيلي', role: 'معلمة' },
+  { name: 'سارة زقيلي', role: 'معلمة' },
+  { name: 'مرام بني ملحم', role: 'معلمة' },
+  { name: 'إيمان ربابعة', role: 'معلمة' },
+  { name: 'إيمان ربابعة', role: 'معلمة' },
+  { name: 'إسراء بشارات', role: 'معلمة' },
+  { name: 'بشرى ربابعة', role: 'معلمة' },
+  { name: 'روعة بعارة', role: 'معلمة' },
+  { name: 'بسمة كساسية', role: 'معلمة' },
+  { name: 'إسراء مقابلة', role: 'معلمة' },
+  { name: 'ليلى الفقيه', role: 'معلمة' },
+  { name: 'رغد مقابلة', role: 'معلمة' },
+  { name: 'ورود بعارة', role: 'معلمة' },
+  { name: 'دلال بني ملحم', role: 'معلمة' },
+  { name: 'سلسبيل الفقيه', role: 'معلمة' },
+  { name: 'ملاك زقيلي', role: 'معلمة' },
+  { name: 'وفاء زقيلي', role: 'معلمة' },
+  { name: 'مروة الفقيه', role: 'معلمة' },
+  { name: 'إيمان مقابلة', role: 'معلمة' }
+];
+
+const femaleIconMarkup = `<div class="female-avatar" aria-label="شعار موحد للكادر النسائي">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><path fill="#9b7653" d="M50 8c22 0 36 18 36 43v35H14V51C14 26 28 8 50 8Z"/><path fill="#f7e7ce" d="M50 23c12 0 20 10 20 24 0 9-4 17-10 22H40c-6-5-10-13-10-22 0-14 8-24 20-24Z"/><path fill="#9b7653" d="M22 82c4-19 15-28 28-28s24 9 28 28H22Z"/></svg>
+</div>`;
+
+document.getElementById('femaleStaffGrid').innerHTML = femaleStaffMembers.map((member, index) => `
+  <div class="staff-card${index === 0 ? ' director' : ''}">
+    ${femaleIconMarkup}
+    <h3>${member.name}</h3>
+    <span class="role">${member.role}</span>
+  </div>
+`).join('');
+
+/* 9) التبديل بين كادر الذكور والإناث */
+const staffTabs = document.querySelectorAll('.staff-tab');
+staffTabs.forEach(tab => tab.addEventListener('click', () => {
+  staffTabs.forEach(item => {
+    const selected = item === tab;
+    item.classList.toggle('active', selected);
+    item.setAttribute('aria-selected', selected ? 'true' : 'false');
+    document.getElementById(item.getAttribute('aria-controls')).hidden = !selected;
+  });
+}));
 </script>
 
 </body>
