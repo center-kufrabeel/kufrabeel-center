@@ -108,7 +108,7 @@ h1,h2,h3,h4{ font-weight:800; }
    3) الشريط العلوي / التنقل
    ============================================================ */
 .site-header{
-  position:fixed; top:0; inset-inline:0; z-index:1200;
+  position:fixed; top:0; inset-inline:0; z-index:1000;
   height:var(--header-height);
   background:rgba(250,247,240,0.92);
   backdrop-filter: blur(10px);
@@ -137,7 +137,7 @@ h1,h2,h3,h4{ font-weight:800; }
 .nav-links a:hover, .nav-links a.active{ color:var(--color-primary); }
 .nav-links a:hover::after, .nav-links a.active::after{ width:100%; }
 
-.menu-toggle{ display:none; flex-direction:column; gap:5px; padding:8px; z-index:1300; }
+.menu-toggle{ display:none; flex-direction:column; gap:5px; padding:8px; z-index:1100; }
 .menu-toggle span{ width:26px; height:3px; background:var(--color-primary); border-radius:3px; transition:var(--transition); }
 .menu-toggle.open span:nth-child(1){ transform: translateY(8px) rotate(45deg); }
 .menu-toggle.open span:nth-child(2){ opacity:0; }
@@ -148,14 +148,13 @@ h1,h2,h3,h4{ font-weight:800; }
     position:fixed; right:0; top:0; height:100dvh; width:min(82vw,320px);
     background:var(--color-white); flex-direction:column; align-items:flex-start;
     padding:110px 32px 32px; gap:26px; box-shadow:-6px 0 24px rgba(0,0,0,0.08);
-    transform:translateX(105%); opacity:0; visibility:hidden;
-    transition:transform var(--transition),opacity .2s ease,visibility .2s ease;
-    z-index:1250; overflow-y:auto; overscroll-behavior:contain;
+    transform: translateX(100%); transition: transform var(--transition); z-index:1050;
   }
-  .nav-links.open,html[dir="rtl"] .nav-links.open{transform:translateX(0);opacity:1;visibility:visible;}
+  html[dir="rtl"] .nav-links{ transform: translateX(100%); }
+  .nav-links.open{ transform: translateX(0); }
   .nav-links a{ font-size:1.1rem; }
   .menu-toggle{ display:flex; }
-  .menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:1100;opacity:0;visibility:hidden;transition:.25s;}
+  .menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:1020;opacity:0;visibility:hidden;transition:.25s;}
   .menu-backdrop.open{opacity:1;visibility:visible;}
   body.menu-open{overflow:hidden;}
 }
