@@ -12,11 +12,11 @@
     :root{--green:#0f4d3f;--light:#e8f3ee;--gold:#c9a24b;--text:#1c2b26;--soft:#4d5f58;--white:#fff;--ivory:#faf7f0;--shadow:0 10px 34px rgba(15,77,63,.12)}
     *{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;overflow-x:hidden}body{font-family:Cairo,sans-serif;background:var(--ivory);color:var(--text);line-height:1.8}a{text-decoration:none;color:inherit}img{display:block;max-width:100%}.container{width:min(1120px,calc(100% - 32px));margin:auto}
     header{background:var(--green);color:#fff}.topbar{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}.back{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);padding:9px 16px;border-radius:10px;font-weight:700}.back:hover{background:rgba(255,255,255,.2)}
-    .hero{background:linear-gradient(145deg,var(--green),#1f7a5f);color:#fff;padding:72px 0}.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}.tag{display:inline-block;background:rgba(255,255,255,.14);color:#f1d690;padding:5px 14px;border-radius:20px;font-size:.85rem;font-weight:700}.hero h1{font-size:clamp(2rem,5vw,3.5rem);margin:14px 0}.hero p{color:rgba(255,255,255,.86);max-width:720px}.hero-image{aspect-ratio:4/3;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.25);background:var(--light);display:grid;place-items:center;font-size:4rem}.hero-image img{width:100%;height:100%;object-fit:cover}
-    main{padding:64px 0}.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}.fact{background:#fff;border:1px solid #e1e6e2;border-radius:16px;padding:24px;box-shadow:0 2px 10px rgba(15,77,63,.07);border-top:4px solid var(--gold)}.fact span{display:block;color:var(--soft);font-size:.82rem;margin-bottom:4px}.fact strong{display:block;color:var(--green);font-size:1.08rem}
+    .hero{background:linear-gradient(145deg,var(--green),#1f7a5f);color:#fff;padding:72px 0}.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}.tag{display:inline-block;background:rgba(255,255,255,.14);color:#f1d690;padding:5px 14px;border-radius:20px;font-size:.85rem;font-weight:700}.hero h1{font-size:clamp(2rem,5vw,3.5rem);margin:14px 0}.hero-image{aspect-ratio:4/3;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.25);background:var(--light);display:grid;place-items:center;font-size:4rem}.hero-image img{width:100%;height:100%;object-fit:cover}
+    main{padding:64px 0}.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}.fact,.content-card{background:#fff;border:1px solid #e1e6e2;border-radius:16px;padding:24px;box-shadow:0 2px 10px rgba(15,77,63,.07)}.fact{border-top:4px solid var(--gold)}.fact span{display:block;color:var(--soft);font-size:.82rem;margin-bottom:4px}.fact strong{display:block;color:var(--green);font-size:1.08rem}.content-card{margin-top:26px}.content-card h2{color:var(--green);font-size:1.35rem;margin-bottom:14px}.achievements-list{padding-right:22px}.achievements-list li+li{margin-top:7px}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.gallery-item{aspect-ratio:4/3;border:2px dashed #cbd9d2;border-radius:14px;background:var(--light);display:grid;place-items:center;overflow:hidden;color:var(--soft);font-weight:700;text-align:center;padding:16px}.gallery-item img{width:100%;height:100%;object-fit:cover}.gallery-note{color:var(--soft);font-size:.88rem;margin:-7px 0 16px}
     footer{background:var(--green);color:rgba(255,255,255,.75);text-align:center;padding:24px}
-    @media(max-width:800px){.hero{padding:50px 0}.hero-grid{grid-template-columns:1fr}.hero-image{max-width:520px}}
-    @media(max-width:480px){.container{width:min(100% - 24px,1120px)}.topbar{min-height:64px;font-size:.8rem}.back{padding:7px 10px}.facts{grid-template-columns:1fr}.fact{padding:19px}.hero h1{font-size:1.85rem}}
+    @media(max-width:800px){.hero{padding:50px 0}.hero-grid{grid-template-columns:1fr}.hero-image{max-width:520px}.gallery-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.container{width:min(100% - 24px,1120px)}.topbar{min-height:64px;font-size:.8rem}.back{padding:7px 10px}.facts,.gallery-grid{grid-template-columns:1fr}.fact,.content-card{padding:19px}.hero h1{font-size:1.85rem}}
   </style>
 </head>
 <body>
@@ -28,13 +28,22 @@
   </header>
   <section class="hero">
     <div class="container hero-grid">
-      <div><span class="tag">مجموعة قرآنية</span><h1 id="groupName"></h1><p id="groupSummary"></p></div>
+      <div><span class="tag">مشروع قرآني</span><h1 id="groupName"></h1></div>
       <div class="hero-image" id="groupImage"></div>
     </div>
   </section>
   <main>
     <div class="container">
       <div class="facts" id="groupFacts" aria-label="معلومات المجموعة"></div>
+      <section class="content-card" aria-labelledby="achievementsTitle">
+        <h2 id="achievementsTitle">إنجازات المشروع</h2>
+        <ul class="achievements-list" id="groupAchievements"></ul>
+      </section>
+      <section class="content-card" aria-labelledby="galleryTitle">
+        <h2 id="galleryTitle">صور المشروع</h2>
+        <p class="gallery-note">ثلاث خانات جاهزة لإضافة صور المشروع.</p>
+        <div class="gallery-grid" id="groupGallery"></div>
+      </section>
     </div>
   </main>
   <footer>مركز كفرأبيل القرآني</footer>
@@ -43,53 +52,59 @@
     const groups = {
       almanar: {
         name: 'مشروع المنار القرآني',
-        summary: 'يضم المشروع 12 طالبًا، منهم 8 من حفاظ كتاب الله، بإشراف المعلم قصي بشارات.',
         image: 'assets/images/project-al-manar.jpeg',
         facts: [
           ['المعلم', 'قصي بشارات'],
           ['عدد الطلاب', '12 طالبًا'],
-          ['حفاظ القرآن', '8 حفاظ']
-        ]
+          ['نشأة المشروع', 'تُضاف لاحقًا']
+        ],
+        achievements: ['8 طلاب من حفاظ كتاب الله'],
+        gallery: [null, null, null]
       },
       almukhbiteen: {
         name: 'مشروع المخبتين القرآني',
-        summary: 'نشأ المشروع عام 2023، ويضم 13 طالبًا من مواليد 2011–2015، وفيه حافظ واحد، ومتوسط الحفظ في المجموعة 15 جزءًا.',
         image: 'assets/images/project-al-mukhbiteen.jpeg',
         facts: [
           ['المعلم', 'محمد عادل'],
-          ['سنة التأسيس', '2023'],
           ['عدد الطلاب', '13 طالبًا'],
+          ['نشأة المشروع', 'عام 2023'],
           ['سنوات الميلاد', '2011–2015'],
-          ['حفاظ القرآن', 'حافظ واحد'],
-          ['متوسط الحفظ', '15 جزءًا']
-        ]
+        ],
+        achievements: ['حافظ واحد لكتاب الله', 'متوسط الحفظ في المجموعة 15 جزءًا'],
+        gallery: [null, null, null]
       },
       faseeroo: {
         name: 'مشروع فسيروا القرآني',
-        summary: 'يضم المشروع 12 طالبًا، بإشراف المعلم محمد رائد.',
         image: null,
         facts: [
           ['المعلم', 'محمد رائد'],
-          ['عدد الطلاب', '12 طالبًا']
-        ]
+          ['عدد الطلاب', '12 طالبًا'],
+          ['نشأة المشروع', 'تُضاف لاحقًا']
+        ],
+        achievements: ['تُضاف إنجازات المشروع لاحقًا'],
+        gallery: [null, null, null]
       },
       munibeen: {
         name: 'مشروع منيبين إليه',
-        summary: 'يضم المشروع 13 طالبًا، بإشراف المعلم بهاء الفقيه.',
         image: null,
         facts: [
           ['المعلم', 'بهاء الفقيه'],
-          ['عدد الطلاب', '13 طالبًا']
-        ]
+          ['عدد الطلاب', '13 طالبًا'],
+          ['نشأة المشروع', 'تُضاف لاحقًا']
+        ],
+        achievements: ['تُضاف إنجازات المشروع لاحقًا'],
+        gallery: [null, null, null]
       },
       ahbaballah: {
         name: 'مشروع أحباب الله',
-        summary: 'يضم المشروع 14 طالبًا، بإشراف المعلم بهاء الفقيه.',
         image: null,
         facts: [
           ['المعلم', 'بهاء الفقيه'],
-          ['عدد الطلاب', '14 طالبًا']
-        ]
+          ['عدد الطلاب', '14 طالبًا'],
+          ['نشأة المشروع', 'تُضاف لاحقًا']
+        ],
+        achievements: ['تُضاف إنجازات المشروع لاحقًا'],
+        gallery: [null, null, null]
       }
     };
 
@@ -99,11 +114,16 @@
 
     document.title = `${data.name} | مركز كفرأبيل القرآني`;
     byId('groupName').textContent = data.name;
-    byId('groupSummary').textContent = data.summary;
     byId('groupImage').innerHTML = data.image ? `<img src="${data.image}" alt="${data.name}">` : '📖';
     byId('groupFacts').innerHTML = data.facts.map(([label, value]) => `
       <div class="fact"><span>${label}</span><strong>${value}</strong></div>
     `).join('');
+    byId('groupAchievements').innerHTML = data.achievements.map(item => `<li>${item}</li>`).join('');
+    /* لإضافة صور المشروع لاحقًا، استبدل null بمسار الصورة داخل قائمة gallery الخاصة بالمشروع. */
+    byId('groupGallery').innerHTML = data.gallery.map((image, index) => image
+      ? `<div class="gallery-item"><img src="${image}" alt="${data.name} — الصورة ${index + 1}"></div>`
+      : `<div class="gallery-item">الصورة ${index + 1}</div>`
+    ).join('');
   </script>
 </body>
 </html>
