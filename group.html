@@ -13,49 +13,97 @@
     *{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;overflow-x:hidden}body{font-family:Cairo,sans-serif;background:var(--ivory);color:var(--text);line-height:1.8}a{text-decoration:none;color:inherit}img{display:block;max-width:100%}.container{width:min(1120px,calc(100% - 32px));margin:auto}
     header{background:var(--green);color:#fff}.topbar{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}.back{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);padding:9px 16px;border-radius:10px;font-weight:700}.back:hover{background:rgba(255,255,255,.2)}
     .hero{background:linear-gradient(145deg,var(--green),#1f7a5f);color:#fff;padding:72px 0}.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}.tag{display:inline-block;background:rgba(255,255,255,.14);color:#f1d690;padding:5px 14px;border-radius:20px;font-size:.85rem;font-weight:700}.hero h1{font-size:clamp(2rem,5vw,3.5rem);margin:14px 0}.hero p{color:rgba(255,255,255,.86);max-width:720px}.hero-image{aspect-ratio:4/3;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.25);background:var(--light);display:grid;place-items:center;font-size:4rem}.hero-image img{width:100%;height:100%;object-fit:cover}
-    main{padding:64px 0}.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:30px}.fact,.card{background:#fff;border:1px solid #e1e6e2;border-radius:16px;padding:24px;box-shadow:0 2px 10px rgba(15,77,63,.07)}.fact span{display:block;color:var(--soft);font-size:.82rem}.fact strong{color:var(--green);font-size:1.08rem}.details{display:grid;grid-template-columns:1fr 1fr;gap:24px}.card h2{color:var(--green);font-size:1.25rem;margin-bottom:12px}.card ul{padding-right:22px}.gallery{grid-column:1/-1}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}.placeholder{aspect-ratio:16/10;border:2px dashed #cbd9d2;border-radius:13px;background:var(--light);display:grid;place-items:center;text-align:center;color:var(--soft);padding:15px}
+    main{padding:64px 0}.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}.fact{background:#fff;border:1px solid #e1e6e2;border-radius:16px;padding:24px;box-shadow:0 2px 10px rgba(15,77,63,.07);border-top:4px solid var(--gold)}.fact span{display:block;color:var(--soft);font-size:.82rem;margin-bottom:4px}.fact strong{display:block;color:var(--green);font-size:1.08rem}
     footer{background:var(--green);color:rgba(255,255,255,.75);text-align:center;padding:24px}
-    @media(max-width:800px){.hero{padding:50px 0}.hero-grid,.details{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.hero-image{max-width:520px}.gallery-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:480px){.container{width:min(100% - 24px,1120px)}.topbar{min-height:64px;font-size:.86rem}.back{padding:7px 10px}.facts,.gallery-grid{grid-template-columns:1fr}.fact,.card{padding:19px}.hero h1{font-size:1.85rem}}
+    @media(max-width:800px){.hero{padding:50px 0}.hero-grid{grid-template-columns:1fr}.hero-image{max-width:520px}}
+    @media(max-width:480px){.container{width:min(100% - 24px,1120px)}.topbar{min-height:64px;font-size:.8rem}.back{padding:7px 10px}.facts{grid-template-columns:1fr}.fact{padding:19px}.hero h1{font-size:1.85rem}}
   </style>
 </head>
 <body>
-  <header><div class="container topbar"><strong>مركز كفرأبيل القرآني</strong><a class="back" href="index.html#projects">← العودة إلى المجموعات</a></div></header>
+  <header>
+    <div class="container topbar">
+      <strong>مركز كفرأبيل القرآني</strong>
+      <a class="back" href="index.html#projects">← العودة إلى المجموعات</a>
+    </div>
+  </header>
   <section class="hero">
     <div class="container hero-grid">
       <div><span class="tag">مجموعة قرآنية</span><h1 id="groupName"></h1><p id="groupSummary"></p></div>
       <div class="hero-image" id="groupImage"></div>
     </div>
   </section>
-  <main><div class="container">
-    <div class="facts">
-      <div class="fact"><span>عدد الطلاب</span><strong id="students"></strong></div>
-      <div class="fact"><span>المشرف/ة</span><strong id="supervisor"></strong></div>
-      <div class="fact"><span>الفئة العمرية</span><strong id="age"></strong></div>
-      <div class="fact"><span>مواعيد اللقاءات</span><strong id="schedule"></strong></div>
+  <main>
+    <div class="container">
+      <div class="facts" id="groupFacts" aria-label="معلومات المجموعة"></div>
     </div>
-    <div class="details">
-      <article class="card"><h2>الأنشطة</h2><ul id="activities"></ul></article>
-      <article class="card"><h2>الإنجازات</h2><ul id="achievements"></ul></article>
-      <article class="card gallery"><h2>صور المجموعة</h2><p>هذا المكان جاهز لإضافة صور المجموعة مستقبلًا.</p><div class="gallery-grid"><div class="placeholder">صورة المجموعة 1</div><div class="placeholder">صورة المجموعة 2</div><div class="placeholder">صورة المجموعة 3</div></div></article>
-    </div>
-  </div></main>
-  <footer>جميع المعلومات المعروضة في هذه الصفحة تجريبية حاليًا.</footer>
+  </main>
+  <footer>مركز كفرأبيل القرآني</footer>
   <script>
     /* قالب موحد: أضف أو عدّل معلومات أي مجموعة داخل هذا الكائن فقط. */
     const groups = {
-      almanar:{name:'مجموعة المنار القرآنية',summary:'مجموعة تربوية تعنى بإتقان الحفظ والمراجعة وبناء الطالب الحافظ ضمن بيئة مشجعة.',students:'12 طالبًا',supervisor:'الأستاذ إبراهيم الخطيب',age:'10–16 سنة',schedule:'السبت والاثنين، 4:00 عصرًا',image:'assets/images/project-al-manar.jpeg',activities:['حلقة حفظ أسبوعية','مراجعة جماعية','مسابقة شهرية'],achievements:['8 حفاظ لكتاب الله','المشاركة في مسابقتين محليتين','إتمام 320 جزءًا بالمراجعة']},
-      almukhbiteen:{name:'مجموعة المخبتين القرآنية',summary:'مجموعة تجمع بين الحفظ المتدرج والمراجعة المنتظمة والمتابعة التربوية للطلبة.',students:'13 طالبًا',supervisor:'الأستاذ خالد ريحان',age:'9–15 سنة',schedule:'الأحد والثلاثاء، 4:30 عصرًا',image:'assets/images/project-al-mukhbiteen.jpeg',activities:['خطة حفظ فردية','لقاء تربوي','رحلة فصلية هادفة'],achievements:['حافظ واحد لكتاب الله','متوسط الحفظ 14 جزءًا','تكريم 6 طلاب متميزين']},
-      faseeroo:{name:'مجموعة فسيروا القرآنية',summary:'مجموعة تساعد الطالب على بناء عادة ثابتة للحفظ والمراجعة خطوة بخطوة.',students:'10 طلاب',supervisor:'الأستاذ راشد مقابلة',age:'8–13 سنة',schedule:'الجمعة والسبت، 10:00 صباحًا',image:null,activities:['تلقين وتصحيح تلاوة','مراجعة تفاعلية','أنشطة قيم وسلوك'],achievements:['متوسط الحفظ 7 أجزاء','إتمام سورة البقرة لثلاثة طلاب','نسبة حضور 92٪']}
+      almanar: {
+        name: 'مشروع المنار القرآني',
+        summary: 'يضم المشروع 12 طالبًا، منهم 8 من حفاظ كتاب الله، بإشراف المعلم قصي بشارات.',
+        image: 'assets/images/project-al-manar.jpeg',
+        facts: [
+          ['المعلم', 'قصي بشارات'],
+          ['عدد الطلاب', '12 طالبًا'],
+          ['حفاظ القرآن', '8 حفاظ']
+        ]
+      },
+      almukhbiteen: {
+        name: 'مشروع المخبتين القرآني',
+        summary: 'نشأ المشروع عام 2023، ويضم 13 طالبًا من مواليد 2011–2015، وفيه حافظ واحد، ومتوسط الحفظ في المجموعة 15 جزءًا.',
+        image: 'assets/images/project-al-mukhbiteen.jpeg',
+        facts: [
+          ['المعلم', 'محمد عادل'],
+          ['سنة التأسيس', '2023'],
+          ['عدد الطلاب', '13 طالبًا'],
+          ['سنوات الميلاد', '2011–2015'],
+          ['حفاظ القرآن', 'حافظ واحد'],
+          ['متوسط الحفظ', '15 جزءًا']
+        ]
+      },
+      faseeroo: {
+        name: 'مشروع فسيروا القرآني',
+        summary: 'يضم المشروع 12 طالبًا، بإشراف المعلم محمد رائد.',
+        image: null,
+        facts: [
+          ['المعلم', 'محمد رائد'],
+          ['عدد الطلاب', '12 طالبًا']
+        ]
+      },
+      munibeen: {
+        name: 'مشروع منيبين إليه',
+        summary: 'يضم المشروع 13 طالبًا، بإشراف المعلم بهاء الفقيه.',
+        image: null,
+        facts: [
+          ['المعلم', 'بهاء الفقيه'],
+          ['عدد الطلاب', '13 طالبًا']
+        ]
+      },
+      ahbaballah: {
+        name: 'مشروع أحباب الله',
+        summary: 'يضم المشروع 14 طالبًا، بإشراف المعلم بهاء الفقيه.',
+        image: null,
+        facts: [
+          ['المعلم', 'بهاء الفقيه'],
+          ['عدد الطلاب', '14 طالبًا']
+        ]
+      }
     };
-    const key=new URLSearchParams(location.search).get('id');
-    const data=groups[key]||groups.almanar;
-    document.title=`${data.name} | مركز كفرأبيل القرآني`;
-    const byId=id=>document.getElementById(id);
-    byId('groupName').textContent=data.name;byId('groupSummary').textContent=data.summary;byId('students').textContent=data.students;byId('supervisor').textContent=data.supervisor;byId('age').textContent=data.age;byId('schedule').textContent=data.schedule;
-    byId('groupImage').innerHTML=data.image?`<img src="${data.image}" alt="${data.name}">`:'📖';
-    byId('activities').innerHTML=data.activities.map(item=>`<li>${item}</li>`).join('');
-    byId('achievements').innerHTML=data.achievements.map(item=>`<li>${item}</li>`).join('');
+
+    const key = new URLSearchParams(location.search).get('id');
+    const data = groups[key] || groups.almanar;
+    const byId = id => document.getElementById(id);
+
+    document.title = `${data.name} | مركز كفرأبيل القرآني`;
+    byId('groupName').textContent = data.name;
+    byId('groupSummary').textContent = data.summary;
+    byId('groupImage').innerHTML = data.image ? `<img src="${data.image}" alt="${data.name}">` : '📖';
+    byId('groupFacts').innerHTML = data.facts.map(([label, value]) => `
+      <div class="fact"><span>${label}</span><strong>${value}</strong></div>
+    `).join('');
   </script>
 </body>
 </html>
