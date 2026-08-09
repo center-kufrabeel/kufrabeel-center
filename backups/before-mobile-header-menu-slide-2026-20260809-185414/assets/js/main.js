@@ -53,8 +53,7 @@
     { src: "assets/images/slider/slide-7.jpg", alt: "نشاط لمجموعة الحفاظ في مركز كفرأبيل القرآني عام 2016", title: "نشاط لمجموعة الحفاظ", year: "2016" },
     { src: "assets/images/slider/slide-8.jpg", alt: "مسابقة نور الوحيين في مركز كفرأبيل القرآني عام 2019", title: "مسابقة نور الوحيين", year: "2019" },
     { src: "assets/images/slider/slide-9.jpg", alt: "نشاط رياضي مشترك بين مركزي كفرأبيل وكفرعوان عام 2019", title: "نشاط رياضي مع مركز كفرعوان", year: "2019" },
-    { src: "assets/images/slider/slide-10.jpg", alt: "مشاركة طلاب مركز كفرأبيل القرآني في المسابقة السنوية عام 2016", title: "مشاركة طلابنا في المسابقة السنوية", year: "2016" },
-    { src: "assets/images/slider/slide-11.jpg", alt: "تخريج أول حافظ لكتاب الله في مشروع المخبتين القرآني عام 2026", title: "تخريج أول حافظ في مشروع المخبتين القرآني", year: "2026" }
+    { src: "assets/images/slider/slide-10.jpg", alt: "مشاركة طلاب مركز كفرأبيل القرآني في المسابقة السنوية عام 2016", title: "مشاركة طلابنا في المسابقة السنوية", year: "2016" }
   ];
 
   const slider = document.querySelector("[data-slider]");
