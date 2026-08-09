@@ -274,15 +274,9 @@ img, svg { display: block; max-width: 100%; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
 .contact-card { padding: 32px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; box-shadow: var(--shadow-sm); }
 .contact-card h3 { color: var(--green-950); font-family: "Alexandria", sans-serif; font-size: 1.3rem; }
-.contact-card h3 i { margin-left: 8px; color: var(--gold-600); }
 .contact-card p { margin: 8px 0 22px; color: var(--muted); }
 .contact-number { display: inline-block; margin-bottom: 18px; color: var(--green-900); font-family: "Alexandria", sans-serif; font-size: 1.5rem; font-weight: 800; direction: ltr; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.contact-actions .btn i { font-size: 1.08rem; }
-.btn-whatsapp { border-color: #25d366; background: #25d366; color: #073a31; }
-.btn-whatsapp:hover { background: #1fbd59; }
-.btn-facebook { border-color: #1877f2; background: #1877f2; color: #fff; }
-.btn-facebook:hover { background: #0f66d6; }
 .site-footer { padding: 44px 0 22px; background: var(--green-950); color: rgba(255,255,255,.7); }
 .footer-grid { display: grid; grid-template-columns: 1.2fr .8fr .8fr; gap: 35px; }
 .footer-brand { display: flex; align-items: center; gap: 14px; color: #fff; }

@@ -129,7 +129,7 @@
     const prefix = element.dataset.prefix || "";
     const suffix = element.dataset.suffix || "";
     const startTime = performance.now();
-    const duration = 2600;
+    const duration = 1200;
     const step = now => {
       const progress = Math.min((now - startTime) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
