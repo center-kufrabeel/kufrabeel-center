@@ -45,10 +45,10 @@
   /* أضف صور السلايد أو احذفها من هذه القائمة فقط، ثم ضع ملفاتها داخل assets/images/slider. */
   const sliderImages = [
     { src: "assets/images/slider/slide-1.jpg", alt: "تخريج حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2025", title: "تخريج حفاظ كتاب الله", year: "2025" },
-    { src: "assets/images/slider/slide-2.jpg", alt: "تخريج أصغر حافظ لكتاب الله بعمر تسع سنوات عام 2023", title: "تخريج أصغر حافظ بعمر 9 سنوات", year: "2023" },
+    { src: "assets/images/slider/slide-2.jpg", alt: "تخريج أصغر حافظ لكتاب الله بعمر تسع سنوات عام 2016", title: "تخريج أصغر حافظ بعمر 9 سنوات", year: "2016" },
     { src: "assets/images/slider/slide-3.jpg", alt: "تخريج حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2024", title: "تخريج حفاظ كتاب الله", year: "2024" },
     { src: "assets/images/slider/slide-4.jpg", alt: "تكريم أحد حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2024", title: "تكريم أحد حفاظ كتاب الله", year: "2024" },
-    { src: "assets/images/slider/slide-5.jpg", alt: "تخريج أحد حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2023", title: "تخريج أحد حفاظ كتاب الله", year: "2023" },
+    { src: "assets/images/slider/slide-5.jpg", alt: "تخريج أحد حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2016", title: "تخريج أحد حفاظ كتاب الله", year: "2016" },
     { src: "assets/images/slider/slide-6.jpg", alt: "تخريج النادي الصيفي في مركز كفرأبيل القرآني عام 2023", title: "تخريج النادي الصيفي", year: "2023" },
     { src: "assets/images/slider/slide-7.jpg", alt: "نشاط لمجموعة الحفاظ في مركز كفرأبيل القرآني عام 2016", title: "نشاط لمجموعة الحفاظ", year: "2016" },
     { src: "assets/images/slider/slide-8.jpg", alt: "مسابقة نور الوحيين في مركز كفرأبيل القرآني عام 2019", title: "مسابقة نور الوحيين", year: "2019" },
