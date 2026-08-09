@@ -79,16 +79,20 @@
 
     <section class="section section-soft" id="license">
       <div class="container">
-        <div class="section-heading center">
-          <span class="eyebrow">اعتماد المركز</span>
-          <h2 class="section-title">وثيقة الترخيص الرسمي</h2>
-          <p class="section-desc">الوثيقة الرسمية للمركز معروضة مباشرة ويمكن قراءتها داخل الصفحة.</p>
-        </div>
-        <div class="license-viewer reveal">
-          <img src="assets/documents/license-pages/license-page-1.png" alt="وثيقة الترخيص الرسمي لمركز كفرأبيل القرآني" loading="lazy">
+        <div class="license-strip reveal">
+          <div class="license-seal" aria-hidden="true">رسمي</div>
+          <div><h3>وثيقة الترخيص الرسمي للمركز</h3><p>وثيقة اعتماد مركز كفرأبيل القرآني متاحة للعرض مباشرة داخل الموقع.</p></div>
+          <button class="btn" type="button" data-open-license>عرض وثيقة الترخيص</button>
         </div>
       </div>
     </section>
+
+    <dialog class="license-dialog" id="licenseDialog" aria-labelledby="licenseTitle">
+      <div class="dialog-head"><strong id="licenseTitle">وثيقة الترخيص الرسمي</strong><button class="dialog-close" type="button" data-close-license aria-label="إغلاق الوثيقة">×</button></div>
+      <object class="license-frame" data="assets/documents/official-license.pdf#toolbar=0&navpanes=0" type="application/pdf">
+        <iframe class="license-frame" src="assets/documents/official-license.pdf#toolbar=0&navpanes=0" title="وثيقة الترخيص الرسمي"></iframe>
+      </object>
+    </dialog>
 
     <section class="section" id="statistics">
       <div class="container">
@@ -136,7 +140,6 @@
             <article class="staff-card reveal"><img class="staff-photo" src="assets/images/staff-qusay.jpg" alt="قصي بشارات" loading="lazy"><h3>قصي بشارات</h3><span class="staff-role">معلم</span></article>
             <article class="staff-card reveal"><img class="staff-photo" src="assets/images/staff-mohammad-raed.jpg" alt="محمد رائد" loading="lazy"><h3>محمد رائد</h3><span class="staff-role">معلم</span></article>
             <article class="staff-card reveal"><img class="staff-photo" src="assets/images/staff-mohammad-adel.jpeg" alt="محمد عادل" loading="lazy"><h3>محمد عادل</h3><span class="staff-role">معلم</span></article>
-            <article class="staff-card reveal"><img class="staff-photo" src="assets/images/staff-mohammad-mazen.jpeg" alt="محمد مازن" loading="lazy"><h3>محمد مازن</h3><span class="staff-role">معلم</span></article>
             <article class="staff-card reveal"><img class="staff-photo" src="assets/images/staff-moamen.jpg" alt="مؤمن مقابلة" loading="lazy"><h3>مؤمن مقابلة</h3><span class="staff-role">معلم</span></article>
           </div>
         </div>
@@ -148,8 +151,8 @@
       <div class="container">
         <div class="section-heading"><span class="eyebrow">تواصل معنا</span><h2 class="section-title">نسعد بتواصلكم</h2><p class="section-desc">للاستفسار عن برامج المركز أو التسجيل فيها، تواصلوا معنا مباشرة.</p></div>
         <div class="contact-grid">
-          <article class="contact-card reveal"><h3>📞 الاتصال والمراسلة</h3><p>يمكنكم الاتصال بالمركز أو إرسال رسالة عبر واتساب.</p><a class="contact-number" href="tel:0777120841">0777120841</a><div class="contact-actions"><a class="btn" href="tel:0777120841">📞 اتصل بنا</a><a class="btn btn-outline" href="https://wa.me/962777120841" target="_blank" rel="noopener noreferrer">💬 واتساب</a></div></article>
-          <article class="contact-card reveal"><h3>📍 الموقع والصفحة الرسمية</h3><p>اعثروا على موقع المركز وتابعوا أخباره عبر صفحته الرسمية.</p><div class="contact-actions"><a class="btn" href="https://maps.app.goo.gl/kMnVGHEGyxCKAeeh9?g_st=aw" target="_blank" rel="noopener noreferrer">📍 الموقع على الخريطة</a><a class="btn btn-outline" href="https://www.facebook.com/share/1BbQF7fhoz/" target="_blank" rel="noopener noreferrer">📘 صفحة فيسبوك</a></div></article>
+          <article class="contact-card reveal"><h3>الاتصال والمراسلة</h3><p>يمكنكم الاتصال بالمركز أو إرسال رسالة عبر واتساب.</p><a class="contact-number" href="tel:0777120841">0777120841</a><div class="contact-actions"><a class="btn" href="tel:0777120841">اتصل بنا</a><a class="btn btn-outline" href="https://wa.me/962777120841" target="_blank" rel="noopener noreferrer">واتساب</a></div></article>
+          <article class="contact-card reveal"><h3>الموقع والصفحة الرسمية</h3><p>اعثروا على موقع المركز وتابعوا أخباره عبر صفحته الرسمية.</p><div class="contact-actions"><a class="btn" href="https://maps.app.goo.gl/kMnVGHEGyxCKAeeh9?g_st=aw" target="_blank" rel="noopener noreferrer">الموقع على الخريطة</a><a class="btn btn-outline" href="https://www.facebook.com/share/1BbQF7fhoz/" target="_blank" rel="noopener noreferrer">صفحة فيسبوك</a></div></article>
         </div>
       </div>
     </section>

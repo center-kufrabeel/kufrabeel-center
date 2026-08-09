@@ -164,4 +164,10 @@
     document.querySelectorAll(".reveal").forEach(item => item.classList.add("visible"));
   }
 
+  const licenseDialog = document.getElementById("licenseDialog");
+  document.querySelector("[data-open-license]")?.addEventListener("click", () => licenseDialog?.showModal());
+  document.querySelector("[data-close-license]")?.addEventListener("click", () => licenseDialog?.close());
+  licenseDialog?.addEventListener("click", event => {
+    if (event.target === licenseDialog) licenseDialog.close();
+  });
 })();
