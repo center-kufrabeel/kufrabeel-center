@@ -292,8 +292,6 @@ img, svg { display: block; max-width: 100%; }
 .contact-card h3 { color: var(--green-950); font-family: "Alexandria", sans-serif; font-size: 1.3rem; }
 .contact-card h3 i { margin-left: 8px; color: var(--gold-600); }
 .contact-card p { margin: 8px 0 22px; color: var(--muted); }
-.contact-address { margin: -10px 0 20px; color: var(--green-900); font-style: normal; font-weight: 700; }
-.contact-address i { margin-left: 7px; color: var(--gold-600); }
 .contact-number { display: inline-block; margin-bottom: 18px; color: var(--green-900); font-family: "Alexandria", sans-serif; font-size: 1.5rem; font-weight: 800; direction: ltr; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .contact-actions .btn i { font-size: 1.08rem; }
