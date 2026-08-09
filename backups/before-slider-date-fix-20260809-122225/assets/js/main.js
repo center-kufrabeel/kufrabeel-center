@@ -50,7 +50,7 @@
     { src: "assets/images/slider/slide-4.jpg", alt: "تكريم أحد حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2024", title: "تكريم أحد حفاظ كتاب الله", year: "2024" },
     { src: "assets/images/slider/slide-5.jpg", alt: "تخريج أحد حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2016", title: "تخريج أحد حفاظ كتاب الله", year: "2016" },
     { src: "assets/images/slider/slide-6.jpg", alt: "تخريج النادي الصيفي في مركز كفرأبيل القرآني عام 2023", title: "تخريج النادي الصيفي", year: "2023" },
-    { src: "assets/images/slider/slide-7.jpg", alt: "نشاط لمجموعة الحفاظ في مركز كفرأبيل القرآني عام 2016", title: "نشاط لمجموعة الحفاظ", year: "2016" },
+    { src: "assets/images/slider/slide-7.jpg", alt: "نشاط لمجموعة الحفاظ في مركز كفرأبيل القرآني عام 2023", title: "نشاط لمجموعة الحفاظ", year: "2023" },
     { src: "assets/images/slider/slide-8.jpg", alt: "مسابقة نور الوحيين في مركز كفرأبيل القرآني عام 2019", title: "مسابقة نور الوحيين", year: "2019" },
     { src: "assets/images/slider/slide-9.jpg", alt: "نشاط رياضي مشترك بين مركزي كفرأبيل وكفرعوان عام 2019", title: "نشاط رياضي مع مركز كفرعوان", year: "2019" },
     { src: "assets/images/slider/slide-10.jpg", alt: "مشاركة طلاب مركز كفرأبيل القرآني في المسابقة السنوية عام 2016", title: "مشاركة طلابنا في المسابقة السنوية", year: "2016" }
