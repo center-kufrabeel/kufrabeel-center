@@ -30,28 +30,13 @@
     item.textContent = new Date().getFullYear();
   });
 
-  if (navList && !navList.querySelector(".mobile-clock")) {
-    const mobileClock = document.createElement("li");
-    mobileClock.className = "mobile-clock";
-    mobileClock.innerHTML = '<span class="header-meta" data-live-clock aria-label="التاريخ والوقت"></span>';
-    navList.appendChild(mobileClock);
-  }
-
-  const clocks = document.querySelectorAll("[data-live-clock]");
-  if (clocks.length) {
-    const clockTemplate = `
-      <span class="clock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5v5l3.2 1.8"></path></svg></span>
-      <span class="clock-copy"><strong data-clock-time></strong><small data-clock-date></small></span>
-    `;
-    clocks.forEach(item => { item.innerHTML = clockTemplate; });
+  const clock = document.querySelector("[data-live-clock]");
+  if (clock) {
     const updateClock = () => {
       const now = new Date();
       const time = new Intl.DateTimeFormat("ar-JO", { hour: "numeric", minute: "2-digit" }).format(now);
-      const date = new Intl.DateTimeFormat("ar-JO", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(now);
-      clocks.forEach(item => {
-        item.querySelector("[data-clock-time]").textContent = time;
-        item.querySelector("[data-clock-date]").textContent = date;
-      });
+      const date = new Intl.DateTimeFormat("ar-JO", { weekday: "short", day: "numeric", month: "short" }).format(now);
+      clock.textContent = `${date} - ${time}`;
     };
     updateClock();
     window.setInterval(updateClock, 30000);
