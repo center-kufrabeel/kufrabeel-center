@@ -42,18 +42,13 @@
     window.setInterval(updateClock, 30000);
   }
 
-  /* أضف صور السلايد أو احذفها من هذه القائمة فقط، ثم ضع ملفاتها داخل assets/images/slider. */
+  /* أضف صور السلايد أو احذفها من هذه القائمة فقط. */
   const sliderImages = [
-    { src: "assets/images/slider/slide-1.jpg", alt: "تخريج حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2025", title: "تخريج حفاظ كتاب الله", year: "2025" },
-    { src: "assets/images/slider/slide-2.jpg", alt: "تخريج أصغر حافظ لكتاب الله بعمر تسع سنوات عام 2016", title: "تخريج أصغر حافظ بعمر 9 سنوات", year: "2016" },
-    { src: "assets/images/slider/slide-3.jpg", alt: "تخريج حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2024", title: "تخريج حفاظ كتاب الله", year: "2024" },
-    { src: "assets/images/slider/slide-4.jpg", alt: "تكريم أحد حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2024", title: "تكريم أحد حفاظ كتاب الله", year: "2024" },
-    { src: "assets/images/slider/slide-5.jpg", alt: "تخريج أحد حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2016", title: "تخريج أحد حفاظ كتاب الله", year: "2016" },
-    { src: "assets/images/slider/slide-6.jpg", alt: "تخريج النادي الصيفي في مركز كفرأبيل القرآني عام 2023", title: "تخريج النادي الصيفي", year: "2023" },
-    { src: "assets/images/slider/slide-7.jpg", alt: "نشاط لمجموعة الحفاظ في مركز كفرأبيل القرآني عام 2023", title: "نشاط لمجموعة الحفاظ", year: "2023" },
-    { src: "assets/images/slider/slide-8.jpg", alt: "مسابقة نور الوحيين في مركز كفرأبيل القرآني عام 2019", title: "مسابقة نور الوحيين", year: "2019" },
-    { src: "assets/images/slider/slide-9.jpg", alt: "نشاط رياضي مشترك بين مركزي كفرأبيل وكفرعوان عام 2019", title: "نشاط رياضي مع مركز كفرعوان", year: "2019" },
-    { src: "assets/images/slider/slide-10.jpg", alt: "مشاركة طلاب مركز كفرأبيل القرآني في المسابقة السنوية عام 2016", title: "مشاركة طلابنا في المسابقة السنوية", year: "2016" }
+    { src: "assets/images/slider/slide-1.jpg", alt: "فعاليات مركز كفرأبيل القرآني" },
+    { src: "assets/images/slider/slide-2.jpg", alt: "أنشطة طلبة المركز" },
+    { src: "assets/images/slider/slide-3.jpg", alt: "برامج المركز القرآنية" },
+    { src: "assets/images/slider/slide-4.jpg", alt: "تكريم طلبة المركز" },
+    { src: "assets/images/slider/slide-5.jpg", alt: "لقاء من لقاءات المركز" }
   ];
 
   const slider = document.querySelector("[data-slider]");
@@ -70,7 +65,6 @@
       <figure class="slide${index === 0 ? " active" : ""}" aria-hidden="${index === 0 ? "false" : "true"}">
         <div class="slide-backdrop" style="background-image:url('${image.src}')" aria-hidden="true"></div>
         <img src="${image.src}" alt="${image.alt}" ${index === 0 ? "fetchpriority=\"high\"" : "loading=\"lazy\""}>
-        <figcaption class="slide-caption"><span>من ذاكرة المركز</span><strong>${image.title}</strong><time datetime="${image.year}">${image.year}</time></figcaption>
       </figure>
     `).join("");
 

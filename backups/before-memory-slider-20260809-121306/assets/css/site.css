@@ -155,22 +155,6 @@ img, svg { display: block; max-width: 100%; }
 .slide.active { opacity: 1; transform: scale(1); z-index: 2; }
 .slide-backdrop { position: absolute; inset: -20px; background-position: center; background-size: cover; filter: blur(22px) brightness(.45); transform: scale(1.12); }
 .slide img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; }
-.slide-caption {
-  position: absolute;
-  z-index: 3;
-  inset-inline: 0;
-  bottom: 0;
-  padding: 58px 24px 43px;
-  display: flex;
-  align-items: baseline;
-  gap: 9px;
-  background: linear-gradient(to top, rgba(3,30,25,.92), rgba(3,30,25,.56) 55%, transparent);
-  color: #fff;
-  pointer-events: none;
-}
-.slide-caption span { color: #f0cf72; font-size: .72rem; font-weight: 700; }
-.slide-caption strong { font-family: "Alexandria", sans-serif; font-size: .92rem; }
-.slide-caption time { color: rgba(255,255,255,.72); font-size: .78rem; }
 .slider-control {
   position: absolute;
   z-index: 5;
@@ -425,10 +409,6 @@ img, svg { display: block; max-width: 100%; }
   .brand-name, .brand-affiliation { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .brand-name { font-size: .88rem; }
   .brand-affiliation { max-width: 190px; font-size: .6rem; }
-  .slide-caption { padding-inline: 15px; gap: 6px; }
-  .slide-caption span { display: none; }
-  .slide-caption strong { font-size: .78rem; }
-  .slide-caption time { font-size: .7rem; }
   .home-hero { padding: 42px 0 52px; }
   .hero-grid { gap: 28px; }
   .hero-copy h1 { font-size: clamp(2rem, 12vw, 3.1rem); }
