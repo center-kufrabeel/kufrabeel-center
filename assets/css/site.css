@@ -319,6 +319,11 @@ img, svg { display: block; max-width: 100%; }
 .btn-whatsapp:hover { background: #1fbd59; }
 .btn-facebook { border-color: #1877f2; background: #1877f2; color: #fff; }
 .btn-facebook:hover { background: #0f66d6; }
+.btn-youtube { border-color: #ff0033; background: #ff0033; color: #fff; }
+.btn-youtube:hover { background: #d9002b; }
+.footer-social-links a { display: inline-flex; align-items: center; gap: 8px; }
+.footer-social-links i { width: 18px; color: #efd487; text-align: center; font-size: 1rem; }
+.footer-social-links a:hover i { color: #fff; }
 .site-footer { padding: 44px 0 22px; background: var(--green-950); color: rgba(255,255,255,.7); }
 .footer-grid { display: grid; grid-template-columns: 1.2fr .8fr .8fr; gap: 35px; }
 .footer-brand { display: flex; align-items: center; gap: 14px; color: #fff; }
