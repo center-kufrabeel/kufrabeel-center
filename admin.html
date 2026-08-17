@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#073a31">
+  <title>إدارة الموقع | مركز كفرأبيل القرآني</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body class="admin-page">
+  <header class="admin-header"><div class="container admin-header-inner">
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/brand/association-logo.png" alt="شعار الجمعية"><span class="brand-copy"><span class="brand-name">إدارة مركز كفرأبيل</span><span class="brand-affiliation">لوحة إدارة الموقع</span></span></a>
+    <a class="btn btn-outline admin-site-link" href="index.html">عرض الموقع</a>
+  </div></header>
+
+  <main class="admin-main container">
+    <section class="admin-auth-card" id="adminSetup" hidden><h1>بقيت خطوة تفعيل</h1><p>أضف المفتاح العام لمشروع Supabase في ملف <code>assets/js/supabase-config.js</code>، ثم حدّث الصفحة.</p></section>
+
+    <section class="admin-auth-card" id="adminLogin">
+      <span class="eyebrow">دخول آمن</span><h1>تسجيل دخول الإدارة</h1><p>هذه الصفحة مخصصة لمالك النظام وإدارة المركز فقط.</p>
+      <form id="adminLoginForm" class="admin-login-form">
+        <label class="form-field"><span>اسم المستخدم</span><input type="text" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="أدخل اسم المستخدم" required></label>
+        <label class="form-field"><span>كلمة المرور</span><input type="password" name="password" autocomplete="current-password" minlength="8" required></label>
+        <div class="form-alert" id="loginAlert" role="alert" hidden></div>
+        <button class="btn" type="submit">دخول لوحة الإدارة</button>
+      </form>
+    </section>
+
+    <section class="admin-dashboard" id="adminDashboard" hidden>
+      <div class="admin-welcome"><div><span class="eyebrow">لوحة التحكم</span><h1>مرحبًا، <span id="adminName">إدارة المركز</span></h1><p>يمكنك إدارة التسجيل والمحتوى من مكان واحد.</p></div><div class="admin-identity"><span class="role-badge" id="adminRole"></span><button class="btn btn-outline" id="adminLogout" type="button">تسجيل الخروج</button></div></div>
+
+      <nav class="admin-tabs" aria-label="أقسام لوحة الإدارة">
+        <button class="active" type="button" data-admin-view="overview">الرئيسية</button>
+        <button type="button" data-admin-view="registrations">طلبات التسجيل <span class="admin-tab-badge" id="registrationBadge" hidden>0</span></button>
+        <button type="button" data-admin-view="groups">المجموعات والملفات</button>
+        <button type="button" data-admin-view="news">آخر الأخبار</button>
+        <button type="button" data-admin-view="slider">السلايد شو</button>
+        <button type="button" data-admin-view="resources">الملفات العامة</button>
+        <button type="button" data-admin-view="trash">سلة المحذوفات</button>
+        <button type="button" data-admin-view="backup" id="backupTab" hidden>النسخ الاحتياطي</button>
+        <button type="button" data-admin-view="activity" id="activityTab" hidden>سجل النشاط</button>
+      </nav>
+
+      <div class="admin-alert" id="adminAlert" role="status" aria-live="polite" hidden></div>
+
+      <section class="admin-view active" data-admin-panel="overview">
+        <div class="admin-stat-grid" id="adminStats"></div>
+        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>فتح وإغلاق التسجيل</h2><p>يتوقف النموذج وقاعدة البيانات معًا عند إغلاق البرنامج.</p></div></div><div class="registration-switches" id="registrationSwitches"></div></article>
+      </section>
+
+      <section class="admin-view" data-admin-panel="registrations" hidden>
+        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>طلبات التسجيل</h2><p>البحث والمراجعة والتصدير إلى ملف Excel.</p></div><div class="admin-actions"><button class="btn btn-outline" id="refreshRegistrations" type="button">تحديث</button><button class="btn" id="exportRegistrations" type="button">تنزيل Excel</button></div></div>
+          <div class="admin-filters"><input id="registrationSearch" type="search" placeholder="ابحث بالاسم أو الهاتف"><select id="registrationProgramFilter"><option value="">كل البرامج</option><option value="permanent">النادي الدائم</option><option value="tajweed">دورات التجويد</option></select><select id="registrationGenderFilter"><option value="">الذكور والإناث</option><option value="male">ذكور</option><option value="female">إناث</option></select></div>
+          <div class="admin-table-wrap"><table class="admin-table registrations-table"><thead><tr><th>الاسم</th><th>الجنس</th><th>الميلاد</th><th>الهاتف</th><th>ولي الأمر</th><th>البرنامج</th><th>الحالة</th><th>ملاحظات الإدارة</th><th>التاريخ</th><th></th></tr></thead><tbody id="registrationsTable"></tbody></table></div>
+        </article>
+      </section>
+
+      <section class="admin-view" data-admin-panel="groups" hidden>
+        <div class="admin-two-columns">
+          <form class="admin-panel-card admin-form" id="groupForm"><input type="hidden" name="id"><input type="hidden" name="current_image_url"><input type="hidden" name="current_image_path"><div class="admin-panel-heading"><div><h2>إضافة أو تعديل مجموعة</h2><p>الحقول موحّدة لجميع مجموعات الذكور والإناث.</p></div><button class="text-button" type="reset">نموذج جديد</button></div>
+            <div class="form-grid"><label class="form-field"><span>اسم المجموعة</span><input name="name" required></label><label class="form-field"><span>المعرّف الإنجليزي</span><input name="slug" pattern="[a-z0-9-]+" placeholder="group-name" required></label><label class="form-field"><span>القسم</span><select name="gender" required><option value="male">ذكور</option><option value="female">إناث</option></select></label><label class="form-field"><span>المشرف أو المشرفة</span><input name="supervisor_name"></label><label class="form-field"><span>عدد الطلاب</span><input name="student_count" type="number" min="0" value="0" required></label><label class="form-field"><span>أعمار الطلاب</span><input name="student_ages" placeholder="مثال: 10–14 سنة"></label><label class="form-field"><span>نشأة المشروع</span><input name="establishment"></label><label class="form-field"><span>عدد الحفاظ</span><input name="hafiz_count" type="number" min="0" value="0"></label><label class="form-field"><span>إنجازات التجويد</span><input name="tajweed_achievement"></label><label class="form-field"><span>متوسط الحفظ</span><input name="average_memorization"></label><label class="form-field form-field-wide"><span>أهم الإنجازات</span><textarea name="achievements" rows="3"></textarea></label><label class="form-field form-field-wide"><span>الصورة الرئيسية</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp"></label><label class="form-consent"><input name="is_published" type="checkbox" checked><span>إظهار المجموعة للزوار</span></label></div><button class="btn" type="submit">حفظ المجموعة</button>
+          </form>
+          <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>المجموعات الحالية</h2><p>اختر «تعديل» لتعبئة النموذج.</p></div></div><div class="admin-item-list" id="adminGroupsList"></div></article>
+        </div>
+        <div class="admin-two-columns admin-subsection">
+          <form class="admin-panel-card admin-form" id="groupMediaForm"><div class="admin-panel-heading"><div><h2>صور وملفات المجموعة</h2><p>يمكن رفع صور المعرض أو ملفات عامة للمجموعة.</p></div></div><label class="form-field"><span>المجموعة</span><select name="group_id" id="mediaGroupSelect" required></select></label><label class="form-field"><span>نوع المحتوى</span><select name="kind"><option value="image">صورة</option><option value="file">ملف</option></select></label><label class="form-field"><span>العنوان</span><input name="title" required></label><label class="form-field"><span>اختر الملف</span><input name="file" type="file" required></label><button class="btn" type="submit">رفع وإضافة</button></form>
+          <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>المرفقات الحالية</h2><p>تظهر حسب المجموعة المختارة.</p></div></div><div class="admin-item-list" id="groupMediaList"></div></article>
+        </div>
+      </section>
+
+      <section class="admin-view" data-admin-panel="news" hidden><div class="admin-two-columns">
+        <form class="admin-panel-card admin-form" id="newsForm"><input type="hidden" name="id"><input type="hidden" name="current_image_url"><input type="hidden" name="current_image_path"><div class="admin-panel-heading"><div><h2>إضافة أو تعديل خبر</h2><p>يمكن نشر الخبر كنص فقط أو مع صورة.</p></div><button class="text-button" type="reset">خبر جديد</button></div><label class="form-field"><span>عنوان الخبر</span><input name="title" required></label><label class="form-field"><span>تاريخ الخبر</span><input name="news_date" type="date" required></label><label class="form-field"><span>نص الخبر</span><textarea name="body" rows="7" required></textarea></label><label class="form-field"><span>صورة اختيارية</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp"></label><label class="form-consent"><input name="is_published" type="checkbox" checked><span>نشر الخبر للزوار</span></label><button class="btn" type="submit">حفظ الخبر</button></form>
+        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>الأخبار الحالية</h2></div></div><div class="admin-item-list" id="adminNewsList"></div></article>
+      </div></section>
+
+      <section class="admin-view" data-admin-panel="slider" hidden><div class="admin-two-columns">
+        <form class="admin-panel-card admin-form" id="sliderForm"><input type="hidden" name="id"><input type="hidden" name="current_image_url"><input type="hidden" name="current_image_path"><div class="admin-panel-heading"><div><h2>إضافة أو تعديل صورة</h2><p>الترتيب الأصغر يظهر أولًا.</p></div><button class="text-button" type="reset">صورة جديدة</button></div><label class="form-field"><span>العنوان</span><input name="title" required></label><label class="form-field"><span>السنة</span><input name="year" type="number" min="1900" max="2200"></label><label class="form-field"><span>وصف الصورة</span><input name="alt_text" required></label><label class="form-field"><span>الترتيب</span><input name="sort_order" type="number" value="0"></label><label class="form-field"><span>الصورة</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp"></label><label class="form-consent"><input name="is_published" type="checkbox" checked><span>إظهار الصورة في السلايد</span></label><button class="btn" type="submit">حفظ الصورة</button></form>
+        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>صور السلايد الحالية</h2></div></div><div class="admin-item-list" id="adminSliderList"></div></article>
+      </div></section>
+
+      <section class="admin-view" data-admin-panel="resources" hidden><div class="admin-two-columns">
+        <form class="admin-panel-card admin-form" id="resourceForm"><input type="hidden" name="id"><input type="hidden" name="current_file_url"><input type="hidden" name="current_file_path"><div class="admin-panel-heading"><div><h2>ملف عام للمجموعات</h2><p>مثل أوراق التسميع وجداول العبادات.</p></div><button class="text-button" type="reset">ملف جديد</button></div><label class="form-field"><span>اسم الملف</span><input name="title" required></label><label class="form-field"><span>وصف مختصر</span><textarea name="description" rows="3"></textarea></label><label class="form-field"><span>اختر الملف</span><input name="file" type="file"></label><label class="form-consent"><input name="is_published" type="checkbox" checked><span>إظهار الملف للزوار</span></label><button class="btn" type="submit">حفظ الملف</button></form>
+        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>الملفات الحالية</h2></div></div><div class="admin-item-list" id="adminResourcesList"></div></article>
+      </div></section>
+
+      <section class="admin-view" data-admin-panel="trash" hidden>
+        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>سلة المحذوفات</h2><p>يمكن للإدارة استعادة العناصر. الحذف النهائي متاح لمالك النظام فقط ولا يمكن التراجع عنه.</p></div><button class="btn btn-outline" id="refreshTrash" type="button">تحديث السلة</button></div>
+          <div class="admin-item-list trash-list" id="trashList"></div>
+        </article>
+      </section>
+
+      <section class="admin-view" data-admin-panel="backup" hidden>
+        <div class="admin-two-columns">
+          <article class="admin-panel-card backup-card"><div class="admin-panel-heading"><div><h2>إنشاء نسخة احتياطية</h2><p>ينزّل ملف JSON يحتوي بيانات الموقع والإعدادات، بما فيها العناصر الموجودة في السلة.</p></div></div><button class="btn" id="exportBackup" type="button">تنزيل نسخة احتياطية</button></article>
+          <article class="admin-panel-card backup-card"><div class="admin-panel-heading"><div><h2>استعادة نسخة احتياطية</h2><p>اختر ملف نسخة أنشأته هذه اللوحة. ستُحدّث البيانات بحسب المعرّفات دون حذف العناصر الأحدث تلقائيًا.</p></div></div><label class="form-field"><span>ملف النسخة الاحتياطية</span><input id="backupFile" type="file" accept="application/json,.json"></label><button class="btn btn-outline" id="restoreBackup" type="button">فحص واستعادة النسخة</button><small class="backup-note">النسخة تحفظ بيانات وروابط الملفات، أما الصور وملفات التخزين نفسها فتبقى محفوظة في Supabase Storage.</small></article>
+        </div>
+      </section>
+
+      <section class="admin-view" data-admin-panel="activity" hidden>
+        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>سجل نشاط الإدارة</h2><p>سجل تلقائي لعمليات المالك والإدارة، ولا يستطيع مشاهدته إلا مالك النظام.</p></div><button class="btn btn-outline" id="refreshActivity" type="button">تحديث السجل</button></div>
+          <div class="admin-table-wrap"><table class="admin-table activity-table"><thead><tr><th>الوقت</th><th>المستخدم</th><th>الصلاحية</th><th>العملية</th><th>القسم</th><th>العنصر</th></tr></thead><tbody id="activityTable"></tbody></table></div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

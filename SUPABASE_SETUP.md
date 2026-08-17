@@ -1,0 +1,71 @@
+# تفعيل Supabase لموقع مركز كفرأبيل
+
+هذه الخطوات تُنفّذ مرة واحدة فقط. لا تضع كلمة مرور قاعدة البيانات أو مفتاح `service_role` داخل أي ملف في الموقع.
+
+## 1. إنشاء الجداول والصلاحيات
+
+1. افتح مشروع `center-kufrabeel's Project` في Supabase.
+2. افتح `SQL Editor` ثم اختر `New query`.
+3. انسخ كامل محتوى الملف `supabase/schema.sql` وشغّله.
+4. بعد نجاح التنفيذ ستظهر الجداول في `Table Editor` وسيظهر bucket باسم `center-public` في `Storage`.
+5. بعد ذلك شغّل كامل الملف `supabase/realtime-activity.sql` لتفعيل سجل النشاط والتحديث الفوري.
+6. أخيرًا شغّل كامل الملف `supabase/admin-enhancements.sql` لتفعيل الجدولة، ومنع الطلبات المكررة، وملاحظات الإدارة، وسلة المحذوفات، والصلاحيات المشددة، والنسخ الاحتياطي.
+
+إذا ظهرت العبارة `Admin enhancements are ready` فقد اكتمل تفعيل التحسينات بنجاح.
+
+## 2. إضافة المفتاح العام للموقع
+
+1. من زر `Connect` انسخ `Publishable key`.
+2. افتح `assets/js/supabase-config.js`.
+3. استبدل النص `PASTE_YOUR_PUBLISHABLE_KEY_HERE` بالمفتاح العام.
+
+المفتاح العام مصمم للاستخدام في المتصفح، والحماية الفعلية مطبقة من خلال سياسات RLS الموجودة في ملف SQL.
+
+## 3. إنشاء حساب المالك وحساب الإدارة
+
+1. افتح `Authentication` ثم `Users` ثم `Add user`.
+2. أنشئ حسابك وحساب إدارة المركز، وفعّل خيار تأكيد البريد عند الإنشاء.
+3. افتح `SQL Editor` وشغّل الملف `supabase/assign-roles.sql`، أو نفّذ الأمرين التاليين بعد استبدال البريدين:
+
+```sql
+insert into public.profiles (id, full_name, role)
+select id, 'Mohammad AL Faqeh', 'owner' from auth.users where email = 'OWNER_EMAIL'
+on conflict (id) do update set full_name = excluded.full_name, role = excluded.role;
+
+insert into public.profiles (id, full_name, role)
+select id, 'إدارة المركز', 'admin' from auth.users where email = 'ADMIN_EMAIL'
+on conflict (id) do update set full_name = excluded.full_name, role = excluded.role;
+```
+
+- `owner`: مالك النظام، وهو أعلى من الإدارة ويستطيع إدارة الصلاحيات مستقبلًا.
+- `admin`: إدارة المركز، تستطيع إدارة المحتوى والتسجيلات ولا تستطيع تغيير صلاحية المالك.
+
+في واجهة الموقع يمكن تسجيل الدخول باسم المستخدم `owner` أو `admin`. يحتفظ Supabase بالبريدين داخليًا للمصادقة واستعادة الحساب عند الحاجة.
+
+## 4. الدخول والتجربة
+
+1. افتح `admin.html` وسجّل الدخول بأحد الحسابين.
+2. افتح التسجيل لبرنامج واحد من قسم «فتح وإغلاق التسجيل».
+3. افتح `registration.html` وأرسل طلبًا تجريبيًا.
+4. ارجع إلى لوحة الإدارة وتأكد من ظهور الطلب.
+5. جرّب زر `تنزيل Excel`؛ سينتج ملفًا بأوراق: الذكور، الإناث، الإحصائيات.
+
+## صلاحيات الإدارة والمالك
+
+- الإدارة: إدارة التسجيلات والمحتوى، إضافة الملاحظات، نقل العناصر إلى السلة واستعادتها، وفتح التسجيل أو جدولته.
+- مالك النظام: جميع ما سبق، إضافة إلى سجل النشاط، النسخة الاحتياطية، الاستعادة، والحذف النهائي.
+- أي تعديل في المجموعات والأخبار والسلايد والملفات يظهر للزوار مباشرة عبر Realtime.
+- التسجيل المكرر لنفس رقم الهاتف ونفس البرنامج يُرفض تلقائيًا.
+
+## النسخ الاحتياطي
+
+من تبويب `النسخ الاحتياطي` في حساب المالك تستطيع تنزيل ملف JSON واستعادته لاحقًا. الملف يحفظ بيانات الموقع وروابط الملفات، بينما تبقى الصور وملفات PDF نفسها داخل `Supabase Storage`؛ لذلك لا تحذف مشروع Supabase أو bucket التخزين اعتمادًا على ملف JSON وحده.
+
+## الملفات المهمة
+
+- إعداد الاتصال: `assets/js/supabase-config.js`
+- مخطط قاعدة البيانات والصلاحيات: `supabase/schema.sql`
+- تحسينات الإدارة المتقدمة: `supabase/admin-enhancements.sql`
+- نموذج التسجيل: `registration.html` و`assets/js/registration.js`
+- لوحة الإدارة: `admin.html` و`assets/js/admin.js`
+- عرض المحتوى للزوار: `assets/js/public-content.js`

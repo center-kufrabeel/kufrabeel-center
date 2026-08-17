@@ -24,10 +24,11 @@
       <div class="facts-grid" id="groupFacts"></div>
       <article class="content-card"><h2>إنجازات المجموعة</h2><ul class="achievement-list" id="groupAchievements"></ul></article>
       <article class="content-card"><h2>صور المجموعة</h2><div class="gallery-grid" id="groupGallery"></div></article>
+      <article class="content-card" id="groupFilesCard" hidden><h2>ملفات المجموعة</h2><div class="group-files-list" id="groupFiles"></div></article>
     </div></section>
   </main>
 
-  <footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-brand"><img src="assets/brand/association-logo.png" alt="شعار الجمعية"><div><strong>مركز كفرأبيل القرآني</strong><span>تابع لجمعية المحافظة على القرآن الكريم</span></div></div></div><div class="footer-col"><h4>روابط الموقع</h4><ul><li><a href="index.html">الرئيسية</a></li><li><a href="groups.html">جميع المجموعات</a></li><li><a href="registration.html">تسجيل الطلبة</a></li></ul></div><div class="footer-col"><h4>تواصل معنا</h4><ul><li><a href="tel:0777120841">0777120841</a></li><li><a href="index.html#contact">بيانات التواصل</a></li></ul></div></div><div class="footer-bottom">جميع الحقوق محفوظة © <span data-current-year></span> مركز كفرأبيل القرآني</div><div class="site-credit">Designed &amp; Developed by Mohammad AL Faqeh</div></div></footer>
+  <footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-brand"><img src="assets/brand/association-logo.png" alt="شعار الجمعية"><div><strong>مركز كفرأبيل القرآني</strong><span>تابع لجمعية المحافظة على القرآن الكريم</span></div></div></div><div class="footer-col"><h4>روابط الموقع</h4><ul><li><a href="index.html">الرئيسية</a></li><li><a href="groups.html">جميع المجموعات</a></li><li><a href="registration.html">تسجيل الطلبة</a></li></ul></div><div class="footer-col"><h4>تواصل معنا</h4><ul><li><a href="tel:0777120841">0777120841</a></li><li><a href="index.html#contact">بيانات التواصل</a></li></ul></div></div><div class="footer-bottom">جميع الحقوق محفوظة © <span data-current-year></span> مركز كفرأبيل القرآني</div><div class="site-credit"><a href="admin.html" aria-label="دخول إدارة الموقع">Designed &amp; Developed by Mohammad AL Faqeh</a></div></div></footer>
 
   <script>
     /* عدّل بيانات كل مجموعة من هذا الكائن. لإضافة صورة، استبدل null بمسارها داخل gallery. */
@@ -49,6 +50,10 @@
     document.getElementById('groupAchievements').innerHTML = data.achievements.map(item => `<li>${item}</li>`).join('');
     document.getElementById('groupGallery').innerHTML = data.gallery.map((image,index) => image ? `<div class="gallery-slot"><img src="${image}" alt="${data.name} - الصورة ${index + 1}"></div>` : `<div class="gallery-slot">مكان الصورة ${index + 1}</div>`).join('');
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/public-content.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

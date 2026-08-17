@@ -58,7 +58,7 @@
   }
 
   /* أضف صور السلايد أو احذفها من هذه القائمة فقط، ثم ضع ملفاتها داخل assets/images/slider. */
-  const sliderImages = [
+  const defaultSliderImages = [
     { src: "assets/images/slider/slide-1.jpg", alt: "تخريج حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2025", title: "تخريج حفاظ كتاب الله", year: "2025" },
     { src: "assets/images/slider/slide-2.jpg", alt: "تخريج أصغر حافظ لكتاب الله بعمر تسع سنوات عام 2023", title: "تخريج أصغر حافظ بعمر 9 سنوات", year: "2023" },
     { src: "assets/images/slider/slide-3.jpg", alt: "تخريج حفاظ كتاب الله في مركز كفرأبيل القرآني عام 2024", title: "تخريج حفاظ كتاب الله", year: "2024" },
@@ -72,8 +72,26 @@
     { src: "assets/images/slider/slide-11.jpg", alt: "تخريج أول حافظ لكتاب الله في مشروع المخبتين القرآني عام 2026", title: "تخريج أول حافظ في مشروع المخبتين القرآني", year: "2026" }
   ];
 
-  const slider = document.querySelector("[data-slider]");
-  if (slider) {
+  const initSlider = async () => {
+    const slider = document.querySelector("[data-slider]");
+    if (!slider) return;
+    let sliderImages = defaultSliderImages;
+    if (window.CenterDB?.configured) {
+      const { data, error } = await CenterDB.client
+        .from("slider_items")
+        .select("image_url,alt_text,title,year,sort_order")
+        .eq("is_published", true)
+        .is("deleted_at", null)
+        .order("sort_order");
+      if (!error && data?.length) {
+        sliderImages = data.map(item => ({
+          src: item.image_url,
+          alt: item.alt_text || item.title,
+          title: item.title,
+          year: item.year ? String(item.year) : ""
+        }));
+      }
+    }
     const slidesRoot = slider.querySelector(".slides");
     const dotsRoot = slider.querySelector(".slider-dots");
     const nextButton = slider.querySelector(".slider-next");
@@ -86,7 +104,7 @@
       <figure class="slide${index === 0 ? " active" : ""}" aria-hidden="${index === 0 ? "false" : "true"}">
         <div class="slide-backdrop" style="background-image:url('${image.src}')" aria-hidden="true"></div>
         <img src="${image.src}" alt="${image.alt}" ${index === 0 ? "fetchpriority=\"high\"" : "loading=\"lazy\""}>
-        <figcaption class="slide-caption"><span>من ذاكرة المركز</span><strong>${image.title}</strong><time datetime="${image.year}">${image.year}</time></figcaption>
+        <figcaption class="slide-caption"><span>من ذاكرة المركز</span><strong>${image.title}</strong>${image.year ? `<time datetime="${image.year}">${image.year}</time>` : ""}</figcaption>
       </figure>
     `).join("");
 
@@ -128,7 +146,9 @@
     }, { passive: true });
     document.addEventListener("visibilitychange", () => document.hidden ? stop() : start());
     start();
-  }
+  };
+  initSlider();
+  window.addEventListener("center:slider-updated", () => window.location.reload());
 
   document.querySelectorAll("[data-tabs]").forEach(tabGroup => {
     const tabs = [...tabGroup.querySelectorAll("[data-tab-target]")];

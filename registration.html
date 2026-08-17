@@ -19,18 +19,45 @@
   </div></header><div class="menu-overlay" aria-hidden="true"></div>
 
   <main>
-    <section class="page-hero"><div class="container page-hero-copy"><span class="eyebrow" style="color:#efd487">الالتحاق ببرامج المركز</span><h1>تسجيل الطلبة</h1><p>اختر البرنامج المناسب، ثم أكمل بيانات التسجيل من خلال النموذج المخصص له.</p></div></section>
-    <section class="section"><div class="container">
-      <div class="section-heading center"><span class="eyebrow">نماذج التسجيل</span><h2 class="section-title">اختر البرنامج</h2><p class="section-desc">تفتح النماذج الحالية عبر Google Forms في نافذة جديدة.</p></div>
-      <div class="registration-grid">
-        <article class="registration-card reveal"><span class="registration-number">01</span><h2>التسجيل الدائم</h2><p>التسجيل في حلقات وبرامج المركز الدائمة ومتابعة الحفظ والمراجعة على مدار العام.</p><a class="btn" href="https://forms.gle/h8WeEAdtxpxSCryF9" target="_blank" rel="noopener noreferrer">فتح نموذج التسجيل الدائم</a></article>
-        <article class="registration-card reveal"><span class="registration-number">02</span><h2>النادي الصيفي</h2><p>التسجيل في برنامج النادي الصيفي وما يقدمه من حلقات قرآنية وأنشطة تربوية.</p><a class="btn" href="https://forms.gle/jdap8qpX6LMJhQoa8" target="_blank" rel="noopener noreferrer">فتح نموذج النادي الصيفي</a></article>
-        <article class="registration-card reveal"><span class="registration-number">03</span><h2>دورات التجويد</h2><p>التسجيل في مسارات التلاوة والتجويد المتدرجة من المستوى التمهيدي إلى المراحل المتقدمة.</p><a class="btn" href="https://forms.gle/uXHd5vgmjWjJEp438" target="_blank" rel="noopener noreferrer">فتح نموذج دورات التجويد</a></article>
+    <section class="page-hero"><div class="container page-hero-copy"><span class="eyebrow" style="color:#efd487">الالتحاق ببرامج المركز</span><h1>تسجيل الطلبة</h1><p>نموذج موحّد وآمن للتسجيل في برامج المركز المتاحة.</p></div></section>
+    <section class="section"><div class="container registration-layout">
+      <div class="registration-intro">
+        <div class="section-heading"><span class="eyebrow">طلب التحاق جديد</span><h2 class="section-title">اختر البرنامج وأدخل البيانات</h2><p class="section-desc">تُرسل البيانات مباشرة إلى إدارة المركز، ولن تكون ظاهرة للزوار.</p></div>
+        <div class="registration-programs" aria-label="حالة التسجيل في البرامج">
+          <article class="program-option-status" data-program-status="permanent"><span class="status-dot"></span><div><strong>النادي الدائم</strong><small>جارٍ التحقق من حالة التسجيل…</small></div></article>
+          <article class="program-option-status" data-program-status="tajweed"><span class="status-dot"></span><div><strong>دورات التجويد</strong><small>جارٍ التحقق من حالة التسجيل…</small></div></article>
+        </div>
+        <div class="privacy-note"><strong>خصوصية البيانات</strong><p>تُستخدم المعلومات للتواصل بخصوص التسجيل فقط، ولا يستطيع الاطلاع عليها إلا الحساب الإداري المخوّل.</p></div>
       </div>
+
+      <form class="student-registration-form" id="studentRegistrationForm" novalidate>
+        <div class="form-alert" id="registrationAlert" role="status" aria-live="polite" hidden></div>
+        <div class="form-section-title"><span>01</span><div><h3>البرنامج المطلوب</h3><p>اختر أحد البرامج المفتوحة للتسجيل.</p></div></div>
+        <div class="program-choice-grid">
+          <label class="program-choice"><input type="radio" name="program" value="permanent" required><span><strong>النادي الدائم</strong><small>الحفظ والمراجعة والمتابعة طوال العام</small></span></label>
+          <label class="program-choice"><input type="radio" name="program" value="tajweed" required><span><strong>دورات التجويد</strong><small>مسارات التلاوة والتجويد بمستوياتها</small></span></label>
+        </div>
+
+        <div class="form-section-title"><span>02</span><div><h3>بيانات الطالب أو الطالبة</h3><p>يرجى كتابة البيانات بصورة صحيحة.</p></div></div>
+        <div class="form-grid">
+          <label class="form-field form-field-wide"><span>الاسم الرباعي</span><input type="text" name="full_name" autocomplete="name" minlength="7" maxlength="120" placeholder="الاسم الأول، اسم الأب، اسم الجد، اسم العائلة" required></label>
+          <label class="form-field"><span>الجنس</span><select name="gender" required><option value="">اختر الجنس</option><option value="male">ذكر</option><option value="female">أنثى</option></select></label>
+          <label class="form-field"><span>تاريخ الميلاد</span><input type="date" name="birth_date" required></label>
+          <label class="form-field"><span>رقم الهاتف</span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" minlength="8" maxlength="20" placeholder="07XXXXXXXX" required></label>
+          <label class="form-field"><span>اسم ولي الأمر</span><input type="text" name="guardian_name" minlength="3" maxlength="120" placeholder="اسم ولي الأمر" required></label>
+          <label class="form-honeypot" aria-hidden="true">اترك هذا الحقل فارغًا<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+        <label class="form-consent"><input type="checkbox" name="consent" required><span>أقر بأن البيانات المدخلة صحيحة، وأوافق على استخدامها للتواصل بخصوص طلب التسجيل.</span></label>
+        <button class="btn registration-submit" type="submit" disabled><span>إرسال طلب التسجيل</span><span class="button-loader" aria-hidden="true"></span></button>
+      </form>
     </div></section>
   </main>
 
-  <footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-brand"><img src="assets/brand/association-logo.png" alt="شعار الجمعية"><div><strong>مركز كفرأبيل القرآني</strong><span>تابع لجمعية المحافظة على القرآن الكريم</span></div></div></div><div class="footer-col"><h4>روابط الموقع</h4><ul><li><a href="index.html">الرئيسية</a></li><li><a href="groups.html">المجموعات القرآنية</a></li><li><a href="tajweed.html">التلاوة والتجويد</a></li></ul></div><div class="footer-col"><h4>تواصل معنا</h4><ul><li><a href="tel:0777120841">0777120841</a></li><li><a href="index.html#contact">بيانات التواصل</a></li></ul></div></div><div class="footer-bottom">جميع الحقوق محفوظة © <span data-current-year></span> مركز كفرأبيل القرآني</div><div class="site-credit">Designed &amp; Developed by Mohammad AL Faqeh</div></div></footer>
+  <footer class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-brand"><img src="assets/brand/association-logo.png" alt="شعار الجمعية"><div><strong>مركز كفرأبيل القرآني</strong><span>تابع لجمعية المحافظة على القرآن الكريم</span></div></div></div><div class="footer-col"><h4>روابط الموقع</h4><ul><li><a href="index.html">الرئيسية</a></li><li><a href="groups.html">المجموعات القرآنية</a></li><li><a href="tajweed.html">التلاوة والتجويد</a></li></ul></div><div class="footer-col"><h4>تواصل معنا</h4><ul><li><a href="tel:0777120841">0777120841</a></li><li><a href="index.html#contact">بيانات التواصل</a></li></ul></div></div><div class="footer-bottom">جميع الحقوق محفوظة © <span data-current-year></span> مركز كفرأبيل القرآني</div><div class="site-credit"><a href="admin.html" aria-label="دخول إدارة الموقع">Designed &amp; Developed by Mohammad AL Faqeh</a></div></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/registration.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

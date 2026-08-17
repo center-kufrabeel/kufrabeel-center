@@ -108,12 +108,11 @@
 
     <section class="section section-soft" id="news">
       <div class="container">
-        <div class="section-heading"><span class="eyebrow">المستجدات</span><h2 class="section-title">آخر الأخبار</h2><p class="section-desc">آخر إعلانات المركز ومواعيد فعالياته.</p></div>
-        <!-- لإضافة خبر جديد، انسخ عنصر article التالي وعدّل التاريخ والعنوان والنص. -->
-        <div class="news-list">
-          <article class="news-item reveal">
-            <time class="news-date" datetime="2026-08-09"><strong>09</strong><span>آب 2026</span></time>
-            <div class="news-copy"><span class="news-badge">إعلان رسمي</span><h3>إقرار مواعيد تخريج النادي الصيفي</h3><p>تم إقرار مواعيد تخريج المشاركين في النادي الصيفي، حيث تقرر إقامة حفل تخريج الإناث يوم الأحد الموافق 9/8/2026، فيما سيُقام حفل تخريج الذكور يوم الأربعاء الموافق 12/8/2026.</p></div>
+        <div class="news-section-heading"><div class="section-heading"><span class="eyebrow">المستجدات</span><h2 class="section-title">آخر الأخبار</h2><p class="section-desc">آخر إعلانات المركز ومواعيد فعالياته.</p></div><div class="news-heading-status"><span aria-hidden="true"></span><div><strong>نافذة المركز الإخبارية</strong><small>إعلانات وفعاليات يتم تحديثها باستمرار</small></div></div></div>
+        <div class="news-list" id="publicNewsList">
+          <article class="news-item news-featured reveal">
+            <div class="news-visual news-placeholder" aria-hidden="true"><span>خبر</span><strong>مركز كفرأبيل القرآني</strong></div>
+            <div class="news-copy"><div class="news-meta"><span class="news-badge">إعلان رسمي</span><time class="news-date" datetime="2026-08-09"><strong>09</strong><span>آب 2026</span></time></div><h3>إقرار مواعيد تخريج النادي الصيفي</h3><p>تم إقرار مواعيد تخريج المشاركين في النادي الصيفي، حيث تقرر إقامة حفل تخريج الإناث يوم الأحد الموافق 9/8/2026، فيما سيُقام حفل تخريج الذكور يوم الأربعاء الموافق 12/8/2026.</p></div>
           </article>
         </div>
       </div>
@@ -164,7 +163,7 @@
         <div class="footer-col"><h4>تواصل معنا</h4><ul class="footer-social-links"><li><a href="tel:0777120841"><i class="fa-solid fa-phone" aria-hidden="true"></i><span>0777120841</span></a></li><li><a href="https://wa.me/962777120841" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>واتساب</span></a></li><li><a href="https://www.facebook.com/share/1BbQF7fhoz/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i><span>فيسبوك</span></a></li><li><a href="https://www.youtube.com/@kufrabilcenterquranic" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube" aria-hidden="true"></i><span>يوتيوب</span></a></li></ul></div>
       </div>
       <div class="footer-bottom">جميع الحقوق محفوظة © <span data-current-year></span> مركز كفرأبيل القرآني</div>
-      <div class="site-credit">Designed &amp; Developed by Mohammad AL Faqeh</div>
+      <div class="site-credit"><a href="admin.html" aria-label="دخول إدارة الموقع">Designed &amp; Developed by Mohammad AL Faqeh</a></div>
     </div>
   </footer>
 
@@ -175,6 +174,10 @@
     const femaleAvatar = `<div class="female-avatar" aria-hidden="true"><svg viewBox="0 0 100 100"><path fill="#9b7653" d="M50 8c22 0 36 18 36 43v35H14V51C14 26 28 8 50 8Z"/><path fill="#f7e7ce" d="M50 23c12 0 20 10 20 24 0 9-4 17-10 22H40c-6-5-10-13-10-22 0-14 8-24 20-24Z"/><path fill="#9b7653" d="M22 82c4-19 15-28 28-28s24 9 28 28H22Z"/></svg></div>`;
     document.getElementById('femaleStaffGrid').innerHTML = femaleStaffMembers.map(([name, role], index) => `<article class="staff-card${index === 0 ? ' director' : ''}">${femaleAvatar}<h3>${name}</h3><span class="staff-role">${role}</span></article>`).join('');
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/public-content.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>
