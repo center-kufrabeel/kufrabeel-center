@@ -38,14 +38,15 @@
       munibeen: { name:'مشروع منيبين إليه', image:null, facts:[['المعلم','بهاء الفقيه'],['عدد الطلاب','13 طالبًا'],['نشأة المشروع','تُضاف لاحقًا']], achievements:['تُضاف إنجازات المجموعة لاحقًا'], gallery:[null,null,null] },
       ahbaballah: { name:'مشروع أحباب الله', image:null, facts:[['المعلم','بهاء الفقيه'],['عدد الطلاب','14 طالبًا'],['نشأة المشروع','تُضاف لاحقًا']], achievements:['تُضاف إنجازات المجموعة لاحقًا'], gallery:[null,null,null] },
       flowers: { name:'مجموعة الزهور', image:null, facts:[['المعلمة','تُضاف لاحقًا'],['عدد الطالبات','يُضاف لاحقًا'],['نشأة المجموعة','تُضاف لاحقًا']], achievements:['تُضاف إنجازات المجموعة لاحقًا'], gallery:[null,null,null] },
-      nur: { name:'مجموعة نور على نور', image:null, facts:[['المعلمة','تُضاف لاحقًا'],['عدد الطالبات','يُضاف لاحقًا'],['نشأة المجموعة','تُضاف لاحقًا']], achievements:['تُضاف إنجازات المجموعة لاحقًا'], gallery:[null,null,null] }
+      nur: { name:'مجموعة نور على نور', image:null, facts:[['المعلمة','تُضاف لاحقًا'],['عدد الطالبات','يُضاف لاحقًا'],['نشأة المجموعة','تُضاف لاحقًا']], achievements:['تُضاف إنجازات المجموعة لاحقًا'], gallery:[null,null,null] },
+      'little-hafiz': { name:'شعبة الحافظ الصغير', image:'assets/images/group-little-hafiz-girls.jpeg', imageFit:'contain', facts:[['عدد الطالبات','10 طالبات']], achievements:['تُضاف إنجازات الشعبة لاحقًا'], gallery:[null,null,null] }
     };
     const key = new URLSearchParams(location.search).get('id');
     const data = groups[key] || groups.almanar;
     const placeholder = '<div class="project-placeholder"><span class="project-mark" aria-hidden="true"></span></div>';
     document.title = `${data.name} | مركز كفرأبيل القرآني`;
     document.getElementById('groupName').textContent = data.name;
-    document.getElementById('groupImage').innerHTML = data.image ? `<img src="${data.image}" alt="${data.name}">` : placeholder;
+    document.getElementById('groupImage').innerHTML = data.image ? `<img class="${data.imageFit === 'contain' ? 'group-image-contain' : ''}" src="${data.image}" alt="${data.name}">` : placeholder;
     document.getElementById('groupFacts').innerHTML = data.facts.map(([label,value]) => `<article class="fact-card"><span class="fact-label">${label}</span><strong class="fact-value">${value}</strong></article>`).join('');
     document.getElementById('groupAchievements').innerHTML = data.achievements.map(item => `<li>${item}</li>`).join('');
     document.getElementById('groupGallery').innerHTML = data.gallery.map((image,index) => image ? `<div class="gallery-slot"><img src="${image}" alt="${data.name} - الصورة ${index + 1}"></div>` : `<div class="gallery-slot">مكان الصورة ${index + 1}</div>`).join('');

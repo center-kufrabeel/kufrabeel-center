@@ -362,6 +362,7 @@ img, svg { display: block; max-width: 100%; }
 .group-hero-grid { display: grid; grid-template-columns: 1fr .72fr; gap: 42px; align-items: center; }
 .group-main-image { aspect-ratio: 4/3; overflow: hidden; border-radius: 22px; background: rgba(255,255,255,.1); }
 .group-main-image img { width: 100%; height: 100%; object-fit: cover; }
+.group-main-image img.group-image-contain { object-fit: contain; }
 .group-main-image .project-placeholder { background: rgba(255,255,255,.12); }
 .group-main-image .project-mark { border-color: #efd487; }
 .group-main-image .project-mark::before { background: #efd487; }
