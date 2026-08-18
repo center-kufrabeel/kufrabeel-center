@@ -10,6 +10,7 @@
 4. بعد نجاح التنفيذ ستظهر الجداول في `Table Editor` وسيظهر bucket باسم `center-public` في `Storage`.
 5. بعد ذلك شغّل كامل الملف `supabase/realtime-activity.sql` لتفعيل سجل النشاط والتحديث الفوري.
 6. أخيرًا شغّل كامل الملف `supabase/admin-enhancements.sql` لتفعيل الجدولة، ومنع الطلبات المكررة، وملاحظات الإدارة، وسلة المحذوفات، والصلاحيات المشددة، والنسخ الاحتياطي.
+7. شغّل كامل الملف `supabase/video-library.sql` مرة واحدة لإضافة المكتبة المرئية وإدارتها والتحديث اللحظي الخاص بها.
 
 إذا ظهرت العبارة `Admin enhancements are ready` فقد اكتمل تفعيل التحسينات بنجاح.
 
@@ -55,6 +56,7 @@ on conflict (id) do update set full_name = excluded.full_name, role = excluded.r
 - الإدارة: إدارة التسجيلات والمحتوى، إضافة الملاحظات، نقل العناصر إلى السلة واستعادتها، وفتح التسجيل أو جدولته.
 - مالك النظام: جميع ما سبق، إضافة إلى سجل النشاط، النسخة الاحتياطية، الاستعادة، والحذف النهائي.
 - أي تعديل في المجموعات والأخبار والسلايد والملفات يظهر للزوار مباشرة عبر Realtime.
+- يمكن للإدارة إضافة رابط يوتيوب من تبويب «المكتبة المرئية»؛ يستخرج الموقع صورة المعاينة ويعرض الفيديو في `videos.html` مباشرة دون رفع ملف الفيديو إلى التخزين.
 - التسجيل المكرر لنفس رقم الهاتف ونفس البرنامج يُرفض تلقائيًا.
 
 ## النسخ الاحتياطي
@@ -66,6 +68,7 @@ on conflict (id) do update set full_name = excluded.full_name, role = excluded.r
 - إعداد الاتصال: `assets/js/supabase-config.js`
 - مخطط قاعدة البيانات والصلاحيات: `supabase/schema.sql`
 - تحسينات الإدارة المتقدمة: `supabase/admin-enhancements.sql`
+- تفعيل المكتبة المرئية: `supabase/video-library.sql`
 - نموذج التسجيل: `registration.html` و`assets/js/registration.js`
 - لوحة الإدارة: `admin.html` و`assets/js/admin.js`
 - عرض المحتوى للزوار: `assets/js/public-content.js`

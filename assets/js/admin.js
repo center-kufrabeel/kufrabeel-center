@@ -12,14 +12,29 @@
   const genderLabels = { male: "ذكر", female: "أنثى" };
   const statusLabels = { new: "جديد", reviewed: "تمت المراجعة", accepted: "مقبول", rejected: "مرفوض" };
   const auditActionLabels = { INSERT: "إضافة", UPDATE: "تعديل", DELETE: "حذف", LOGIN: "دخول", EXPORT: "تصدير", RESTORE: "استعادة" };
-  const auditEntityLabels = { profiles: "الحسابات", registration_settings: "إعدادات التسجيل", registrations: "طلبات التسجيل", groups: "المجموعات", group_media: "مرفقات المجموعات", news: "الأخبار", slider_items: "السلايد شو", resources: "الملفات العامة", backup: "النسخ الاحتياطي" };
+  const auditEntityLabels = { profiles: "الحسابات", registration_settings: "إعدادات التسجيل", registrations: "طلبات التسجيل", groups: "المجموعات", group_media: "مرفقات المجموعات", news: "الأخبار", slider_items: "السلايد شو", video_items: "المكتبة المرئية", resources: "الملفات العامة", backup: "النسخ الاحتياطي" };
   const loginAliases = { owner: "mohammadalfaqeeh73@gmail.com", admin: "loordmohammad79@gmail.com" };
-  const state = { profile: null, registrations: [], groups: [], news: [], slider: [], resources: [], media: [], activity: [], trash: [] };
+  const state = { profile: null, registrations: [], groups: [], news: [], slider: [], videos: [], resources: [], media: [], activity: [], trash: [] };
   let realtimeChannel = null;
 
   const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
   const formatDate = value => value ? new Intl.DateTimeFormat("ar-JO", { dateStyle: "medium" }).format(new Date(value)) : "—";
   const formatDateTime = value => value ? new Intl.DateTimeFormat("ar-JO", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)) : "—";
+  const youtubeIdFromUrl = value => {
+    const input = String(value || "").trim();
+    if (/^[\w-]{11}$/.test(input)) return input;
+    try {
+      const url = new URL(input);
+      const host = url.hostname.replace(/^www\./, "");
+      if (!["youtube.com", "m.youtube.com", "youtube-nocookie.com", "youtu.be"].includes(host)) return null;
+      let id = host === "youtu.be" ? url.pathname.split("/").filter(Boolean)[0] : url.searchParams.get("v");
+      if (!id && ["youtube.com", "m.youtube.com", "youtube-nocookie.com"].includes(host)) {
+        const parts = url.pathname.split("/").filter(Boolean);
+        if (["shorts", "embed", "live"].includes(parts[0])) id = parts[1];
+      }
+      return /^[\w-]{11}$/.test(id || "") ? id : null;
+    } catch { return null; }
+  };
   const toLocalInput = value => {
     if (!value) return "";
     const date = new Date(value);
@@ -155,6 +170,11 @@
     state.slider = data || [];
     document.getElementById("adminSliderList").innerHTML = state.slider.map(item => `<div class="admin-list-item"><img src="${escapeHtml(item.image_url)}" alt=""><div><strong>${escapeHtml(item.title)}</strong><small>${item.year || "بدون سنة"} · ترتيب ${item.sort_order}</small></div><div class="item-actions"><button type="button" data-edit-slider="${item.id}">تعديل</button><button class="danger" type="button" data-delete-slider="${item.id}">نقل للسلة</button></div></div>`).join("") || '<p class="empty-message">لا توجد صور.</p>';
   };
+  const loadVideos = async () => {
+    const { data, error } = await db.from("video_items").select("*").is("deleted_at", null).order("is_featured", { ascending: false }).order("sort_order").order("created_at", { ascending: false }); if (error) throw error;
+    state.videos = data || [];
+    document.getElementById("adminVideosList").innerHTML = state.videos.map(item => `<div class="admin-list-item"><span class="admin-video-thumb"><img src="https://i.ytimg.com/vi/${escapeHtml(item.youtube_id)}/mqdefault.jpg" alt=""></span><div><strong>${escapeHtml(item.title)}</strong><small>${item.category ? `${escapeHtml(item.category)} · ` : ""}${item.is_featured ? "مميز · " : ""}${item.is_published ? "منشور" : "مسودة"}</small></div><div class="item-actions"><a href="${escapeHtml(item.youtube_url)}" target="_blank" rel="noopener">فتح</a><button type="button" data-edit-video="${item.id}">تعديل</button><button class="danger" type="button" data-delete-video="${item.id}">نقل للسلة</button></div></div>`).join("") || '<p class="empty-message">لا توجد فيديوهات بعد.</p>';
+  };
   const loadResources = async () => {
     const { data, error } = await db.from("resources").select("*").is("deleted_at", null).order("created_at", { ascending: false }); if (error) throw error;
     state.resources = data || [];
@@ -167,6 +187,7 @@
     group_media: { label: "مرفق مجموعة", title: item => item.title, path: "file_path" },
     news: { label: "خبر", title: item => item.title, path: "image_path" },
     slider_items: { label: "صورة سلايد", title: item => item.title, path: "image_path" },
+    video_items: { label: "فيديو", title: item => item.title, path: null },
     resources: { label: "ملف عام", title: item => item.title, path: "file_path" }
   };
   const loadTrash = async () => {
@@ -196,11 +217,12 @@
       .on("postgres_changes", { event: "*", schema: "public", table: "group_media" }, () => { loadMedia(); loadTrash(); })
       .on("postgres_changes", { event: "*", schema: "public", table: "news" }, () => { loadNews(); loadTrash(); })
       .on("postgres_changes", { event: "*", schema: "public", table: "slider_items" }, () => { loadSlider(); loadTrash(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "video_items" }, () => { loadVideos(); loadTrash(); })
       .on("postgres_changes", { event: "*", schema: "public", table: "resources" }, () => { loadResources(); loadTrash(); })
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "audit_logs" }, loadActivity).subscribe();
   };
   const loadAll = async () => {
-    const loaders = [loadSettings(), loadRegistrations(), loadGroups(), loadNews(), loadSlider(), loadResources(), loadTrash()];
+    const loaders = [loadSettings(), loadRegistrations(), loadGroups(), loadNews(), loadSlider(), loadVideos(), loadResources(), loadTrash()];
     if (state.profile?.role === "owner") loaders.push(loadActivity());
     try { await Promise.all(loaders); } catch (error) { showAdminAlert(`تعذر تحميل بعض البيانات: ${error.message}`, "error"); }
   };
@@ -269,6 +291,29 @@
   bindContentForm({ formId:"sliderForm", listId:"adminSliderList", table:"slider_items", stateKey:"slider", folder:"slider", fileField:"image", urlField:"current_image_url", pathField:"current_image_path", fields:["title","year","alt_text","sort_order"], load:loadSlider, buildPayload:(v,f,u) => { if (!u && !v.current_image_url) throw new Error("اختر صورة للسلايد."); return { title:v.title.trim(), year:v.year ? Number(v.year) : null, alt_text:v.alt_text.trim(), sort_order:Number(v.sort_order || 0), image_url:u?.url || v.current_image_url, image_path:u?.path || v.current_image_path || null, is_published:f.elements.is_published.checked }; } });
   bindContentForm({ formId:"resourceForm", listId:"adminResourcesList", table:"resources", stateKey:"resources", actionKey:"resource", folder:"resources", fileField:"file", urlField:"current_file_url", pathField:"current_file_path", fields:["title","description"], load:loadResources, buildPayload:(v,f,u) => { if (!u && !v.current_file_url) throw new Error("اختر الملف المطلوب."); return { title:v.title.trim(), description:v.description.trim() || null, file_url:u?.url || v.current_file_url, file_path:u?.path || v.current_file_path || null, is_published:f.elements.is_published.checked }; } });
 
+  const videoForm = document.getElementById("videoForm");
+  videoForm.addEventListener("reset", () => window.setTimeout(() => { videoForm.elements.id.value = ""; videoForm.elements.is_featured.checked = false; videoForm.elements.is_published.checked = true; }));
+  videoForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    try {
+      const values = Object.fromEntries(new FormData(videoForm));
+      const youtubeId = youtubeIdFromUrl(values.youtube_url);
+      if (!youtubeId) throw new Error("رابط يوتيوب غير صحيح. استخدم رابط الفيديو أو Shorts أو youtu.be.");
+      const payload = { title: values.title.trim(), description: values.description.trim() || null, youtube_url: values.youtube_url.trim(), youtube_id: youtubeId, category: values.category.trim() || null, sort_order: Number(values.sort_order || 0), is_featured: videoForm.elements.is_featured.checked, is_published: videoForm.elements.is_published.checked };
+      const { error } = await (values.id ? db.from("video_items").update(payload).eq("id", values.id) : db.from("video_items").insert(payload));
+      if (error) throw error;
+      videoForm.reset(); await loadVideos(); showAdminAlert("تم حفظ الفيديو وسيظهر للزوار مباشرة إذا كان منشورًا.");
+    } catch (error) { showAdminAlert(error.message, "error"); }
+  });
+  document.getElementById("adminVideosList").addEventListener("click", async event => {
+    const edit = event.target.closest("[data-edit-video]"); const remove = event.target.closest("[data-delete-video]");
+    if (edit) {
+      const item = state.videos.find(video => video.id === edit.dataset.editVideo); if (!item) return;
+      fillForm(videoForm, item, ["id","title","youtube_url","category","description","sort_order"]); videoForm.elements.is_featured.checked = item.is_featured;
+    }
+    if (remove && confirm("نقل هذا الفيديو إلى سلة المحذوفات؟")) { try { await softDelete("video_items", remove.dataset.deleteVideo); await loadVideos(); await loadTrash(); } catch (error) { showAdminAlert(error.message, "error"); } }
+  });
+
   document.getElementById("trashList").addEventListener("click", async event => {
     const restore = event.target.closest("[data-restore-table]"); const purge = event.target.closest("[data-purge-table]");
     try {
@@ -279,11 +324,11 @@
 
   document.getElementById("exportBackup").addEventListener("click", async () => {
     if (state.profile.role !== "owner") return;
-    try { const tables = ["registration_settings", "registrations", "groups", "group_media", "news", "slider_items", "resources"]; const entries = await Promise.all(tables.map(async table => { const { data, error } = await db.from(table).select("*"); if (error) throw error; return [table, data || []]; })); const backup = { format: "kufrabeel-center-backup-v1", created_at: new Date().toISOString(), created_by: state.profile.full_name, data: Object.fromEntries(entries) }; downloadJson(backup, `نسخة-احتياطية-مركز-كفرأبيل-${new Date().toISOString().slice(0,10)}.json`); await logEvent("EXPORT", "backup", "تنزيل نسخة احتياطية كاملة"); showAdminAlert("تم إنشاء النسخة الاحتياطية وتنزيلها."); } catch (error) { showAdminAlert(error.message, "error"); }
+    try { const tables = ["registration_settings", "registrations", "groups", "group_media", "news", "slider_items", "video_items", "resources"]; const entries = await Promise.all(tables.map(async table => { const { data, error } = await db.from(table).select("*"); if (error) throw error; return [table, data || []]; })); const backup = { format: "kufrabeel-center-backup-v1", created_at: new Date().toISOString(), created_by: state.profile.full_name, data: Object.fromEntries(entries) }; downloadJson(backup, `نسخة-احتياطية-مركز-كفرأبيل-${new Date().toISOString().slice(0,10)}.json`); await logEvent("EXPORT", "backup", "تنزيل نسخة احتياطية كاملة"); showAdminAlert("تم إنشاء النسخة الاحتياطية وتنزيلها."); } catch (error) { showAdminAlert(error.message, "error"); }
   });
   document.getElementById("restoreBackup").addEventListener("click", async () => {
     if (state.profile.role !== "owner") return; const file = document.getElementById("backupFile").files[0]; if (!file) { showAdminAlert("اختر ملف النسخة الاحتياطية أولًا.", "error"); return; }
-    try { const backup = JSON.parse(await file.text()); if (backup.format !== "kufrabeel-center-backup-v1" || !backup.data) throw new Error("هذا الملف ليس نسخة احتياطية صالحة للموقع."); if (!confirm(`سيتم استعادة النسخة المنشأة بتاريخ ${formatDateTime(backup.created_at)}. هل تريد المتابعة؟`)) return; const order = ["registration_settings", "groups", "registrations", "news", "slider_items", "resources", "group_media"]; for (const table of order) { const rows = backup.data[table]; if (!Array.isArray(rows) || !rows.length) continue; const { error } = await db.from(table).upsert(rows, { onConflict: table === "registration_settings" ? "program" : "id" }); if (error) throw new Error(`${table}: ${error.message}`); } const { error: sequenceError } = await db.rpc("sync_registration_sequence"); if (sequenceError) throw sequenceError; await logEvent("RESTORE", "backup", `استعادة نسخة ${backup.created_at || "غير مؤرخة"}`); await loadAll(); showAdminAlert("اكتملت استعادة النسخة الاحتياطية بنجاح."); } catch (error) { showAdminAlert(`تعذرت الاستعادة: ${error.message}`, "error"); }
+    try { const backup = JSON.parse(await file.text()); if (backup.format !== "kufrabeel-center-backup-v1" || !backup.data) throw new Error("هذا الملف ليس نسخة احتياطية صالحة للموقع."); if (!confirm(`سيتم استعادة النسخة المنشأة بتاريخ ${formatDateTime(backup.created_at)}. هل تريد المتابعة؟`)) return; const order = ["registration_settings", "groups", "registrations", "news", "slider_items", "video_items", "resources", "group_media"]; for (const table of order) { const rows = backup.data[table]; if (!Array.isArray(rows) || !rows.length) continue; const { error } = await db.from(table).upsert(rows, { onConflict: table === "registration_settings" ? "program" : "id" }); if (error) throw new Error(`${table}: ${error.message}`); } const { error: sequenceError } = await db.rpc("sync_registration_sequence"); if (sequenceError) throw sequenceError; await logEvent("RESTORE", "backup", `استعادة نسخة ${backup.created_at || "غير مؤرخة"}`); await loadAll(); showAdminAlert("اكتملت استعادة النسخة الاحتياطية بنجاح."); } catch (error) { showAdminAlert(`تعذرت الاستعادة: ${error.message}`, "error"); }
   });
 
   const init = async () => { if (!window.CenterDB?.configured) { setup.hidden = false; loginSection.hidden = true; return; } const { data: { session } } = await db.auth.getSession(); if (session) await requireStaff(session); };

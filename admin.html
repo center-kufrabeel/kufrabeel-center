@@ -39,6 +39,7 @@
         <button type="button" data-admin-view="groups">المجموعات والملفات</button>
         <button type="button" data-admin-view="news">آخر الأخبار</button>
         <button type="button" data-admin-view="slider">السلايد شو</button>
+        <button type="button" data-admin-view="videos">المكتبة المرئية</button>
         <button type="button" data-admin-view="resources">الملفات العامة</button>
         <button type="button" data-admin-view="trash">سلة المحذوفات</button>
         <button type="button" data-admin-view="backup" id="backupTab" hidden>النسخ الاحتياطي</button>
@@ -80,6 +81,19 @@
       <section class="admin-view" data-admin-panel="slider" hidden><div class="admin-two-columns">
         <form class="admin-panel-card admin-form" id="sliderForm"><input type="hidden" name="id"><input type="hidden" name="current_image_url"><input type="hidden" name="current_image_path"><div class="admin-panel-heading"><div><h2>إضافة أو تعديل صورة</h2><p>الترتيب الأصغر يظهر أولًا.</p></div><button class="text-button" type="reset">صورة جديدة</button></div><label class="form-field"><span>العنوان</span><input name="title" required></label><label class="form-field"><span>السنة</span><input name="year" type="number" min="1900" max="2200"></label><label class="form-field"><span>وصف الصورة</span><input name="alt_text" required></label><label class="form-field"><span>الترتيب</span><input name="sort_order" type="number" value="0"></label><label class="form-field"><span>الصورة</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp"></label><label class="form-consent"><input name="is_published" type="checkbox" checked><span>إظهار الصورة في السلايد</span></label><button class="btn" type="submit">حفظ الصورة</button></form>
         <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>صور السلايد الحالية</h2></div></div><div class="admin-item-list" id="adminSliderList"></div></article>
+      </div></section>
+
+      <section class="admin-view" data-admin-panel="videos" hidden><div class="admin-two-columns">
+        <form class="admin-panel-card admin-form" id="videoForm"><input type="hidden" name="id"><div class="admin-panel-heading"><div><h2>إضافة أو تعديل فيديو</h2><p>الصق رابط يوتيوب فقط؛ سيستخرج الموقع صورة المعاينة ويعرض المشغل تلقائيًا.</p></div><button class="text-button" type="reset">فيديو جديد</button></div>
+          <label class="form-field"><span>عنوان الفيديو</span><input name="title" required></label>
+          <label class="form-field"><span>رابط يوتيوب</span><input name="youtube_url" type="url" inputmode="url" dir="ltr" placeholder="https://www.youtube.com/watch?v=..." required></label>
+          <label class="form-field"><span>التصنيف (اختياري)</span><input name="category" placeholder="مثال: تخريج، نشاط، تلاوة"></label>
+          <label class="form-field"><span>وصف مختصر (اختياري)</span><textarea name="description" rows="4"></textarea></label>
+          <label class="form-field"><span>الترتيب</span><input name="sort_order" type="number" value="0"></label>
+          <div class="form-grid"><label class="form-consent"><input name="is_featured" type="checkbox"><span>فيديو مميز بحجم أكبر</span></label><label class="form-consent"><input name="is_published" type="checkbox" checked><span>نشر الفيديو للزوار</span></label></div>
+          <button class="btn" type="submit">حفظ الفيديو</button>
+        </form>
+        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>الفيديوهات الحالية</h2><p>أي تعديل منشور يظهر في المكتبة المرئية مباشرة.</p></div></div><div class="admin-item-list" id="adminVideosList"></div></article>
       </div></section>
 
       <section class="admin-view" data-admin-panel="resources" hidden><div class="admin-two-columns">
