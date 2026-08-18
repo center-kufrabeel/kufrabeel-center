@@ -12,9 +12,9 @@
   const genderLabels = { male: "ذكر", female: "أنثى" };
   const statusLabels = { new: "جديد", reviewed: "تمت المراجعة", accepted: "مقبول", rejected: "مرفوض" };
   const auditActionLabels = { INSERT: "إضافة", UPDATE: "تعديل", DELETE: "حذف", LOGIN: "دخول", EXPORT: "تصدير", RESTORE: "استعادة" };
-  const auditEntityLabels = { profiles: "الحسابات", registration_settings: "إعدادات التسجيل", registrations: "طلبات التسجيل", groups: "المجموعات", group_media: "مرفقات المجموعات", news: "الأخبار", slider_items: "السلايد شو", video_items: "المكتبة المرئية", resources: "الملفات العامة", backup: "النسخ الاحتياطي" };
+  const auditEntityLabels = { profiles: "الحسابات", site_settings: "إعدادات التواصل", system_controls: "تحكم المالك", registration_settings: "إعدادات التسجيل", registrations: "طلبات التسجيل", groups: "المجموعات", group_media: "مرفقات المجموعات", news: "الأخبار", slider_items: "السلايد شو", video_items: "المكتبة المرئية", resources: "الملفات العامة", backup: "النسخ الاحتياطي" };
   const loginAliases = { owner: "mohammadalfaqeeh73@gmail.com", admin: "loordmohammad79@gmail.com" };
-  const state = { profile: null, registrations: [], groups: [], news: [], slider: [], videos: [], resources: [], media: [], activity: [], trash: [] };
+  const state = { profile: null, session: null, ownerSettings: null, systemControls: null, registrations: [], groups: [], news: [], slider: [], videos: [], resources: [], media: [], activity: [], trash: [] };
   let realtimeChannel = null;
 
   const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
@@ -87,11 +87,30 @@
     if (error || !["owner", "admin"].includes(data?.role)) {
       await db.auth.signOut(); showLoginAlert("هذا الحساب لا يملك صلاحية دخول لوحة الإدارة."); return false;
     }
+    const { data: controls } = await db.from("system_controls").select("maintenance_enabled,maintenance_message,force_logout_at").eq("id", "main").maybeSingle();
+    const signedInAt = new Date(session.user.last_sign_in_at || session.user.created_at || 0).getTime();
+    const forcedAt = controls?.force_logout_at ? new Date(controls.force_logout_at).getTime() : 0;
+    if (data.role !== "owner" && (controls?.maintenance_enabled || forcedAt > signedInAt)) {
+      await db.auth.signOut();
+      showLoginAlert(controls?.maintenance_enabled ? (controls.maintenance_message || "الموقع تحت الصيانة حاليًا، ودخول الإدارة متوقف مؤقتًا.") : "انتهت جلسة الإدارة بطلب من مالك النظام. سجّل الدخول من جديد.");
+      return false;
+    }
     state.profile = data;
+    state.session = session;
+    document.body.classList.remove("role-owner", "role-admin");
+    document.body.classList.add(data.role === "owner" ? "role-owner" : "role-admin");
     document.getElementById("adminName").textContent = data.full_name || "مستخدم إداري";
     document.getElementById("adminRole").textContent = data.role === "owner" ? "مالك النظام" : "إدارة المركز";
+    document.getElementById("adminBrandName").textContent = data.role === "owner" ? "إدارة مركز كفرأبيل" : "مركز كفرأبيل القرآني";
+    document.getElementById("adminBrandAffiliation").textContent = data.role === "owner" ? "لوحة مالك النظام" : "تابع لجمعية المحافظة على القرآن الكريم";
+    document.getElementById("adminWelcomeEyebrow").textContent = data.role === "owner" ? "لوحة تحكم المالك" : "مساحة إدارة المركز";
+    document.getElementById("adminWelcomeText").textContent = data.role === "owner" ? "إدارة الصلاحيات والمحتوى وإعدادات النظام من مكان واحد." : "تابع طلبات التسجيل وحدّث محتوى المركز كما يظهر للزوار.";
+    const portalBadge = document.getElementById("adminPortalBadge");
+    portalBadge.hidden = data.role !== "admin";
     document.getElementById("activityTab").hidden = data.role !== "owner";
     document.getElementById("backupTab").hidden = data.role !== "owner";
+    document.getElementById("ownerSettingsTab").hidden = data.role !== "owner";
+    document.getElementById("systemControlTab").hidden = data.role !== "owner";
     loginSection.hidden = true; dashboard.hidden = false;
     await loadAll(); setupRealtime();
     const loginKey = `center-login-${session.access_token.slice(-12)}`;
@@ -207,11 +226,40 @@
     state.activity = data || [];
     document.getElementById("activityTable").innerHTML = state.activity.length ? state.activity.map(item => `<tr><td>${formatDate(item.created_at)}<small class="activity-time">${new Intl.DateTimeFormat("ar-JO", { hour: "numeric", minute: "2-digit" }).format(new Date(item.created_at))}</small></td><td><strong>${escapeHtml(item.actor_name)}</strong></td><td>${item.actor_role === "owner" ? "مالك النظام" : "إدارة المركز"}</td><td><span class="audit-action ${item.action.toLowerCase()}">${auditActionLabels[item.action] || item.action}</span></td><td>${auditEntityLabels[item.entity_type] || escapeHtml(item.entity_type)}</td><td>${escapeHtml(item.record_label || item.entity_id || "—")}</td></tr>`).join("") : '<tr><td colspan="6" class="empty-cell">لا توجد عمليات إدارية مسجلة بعد.</td></tr>';
   };
+  const loadOwnerSettings = async () => {
+    if (state.profile?.role !== "owner") return;
+    const { data, error } = await db.from("site_settings").select("*").eq("id", "contact").maybeSingle(); if (error) throw error;
+    state.ownerSettings = data;
+    if (!data) return;
+    const form = document.getElementById("ownerSettingsForm");
+    ["phone","location_text","map_url","whatsapp_url","facebook_url","instagram_url","youtube_url"].forEach(field => { form.elements[field].value = data[field] || ""; });
+  };
+  const loadSystemControls = async () => {
+    if (state.profile?.role !== "owner") return;
+    const { data, error } = await db.from("system_controls").select("*").eq("id", "main").maybeSingle(); if (error) throw error;
+    state.systemControls = data;
+    if (!data) return;
+    const maintenanceForm = document.getElementById("maintenanceForm");
+    maintenanceForm.elements.maintenance_enabled.checked = data.maintenance_enabled;
+    maintenanceForm.elements.maintenance_message.value = data.maintenance_message || "";
+    maintenanceForm.elements.expected_return_at.value = toLocalInput(data.expected_return_at);
+    document.getElementById("retentionForm").elements.registration_retention_months.value = data.registration_retention_months;
+    const status = document.getElementById("maintenanceStatus"); status.textContent = data.maintenance_enabled ? "يعمل الآن" : "متوقف"; status.className = `effective-status ${data.maintenance_enabled ? "open" : "closed"}`;
+    document.getElementById("lastForcedLogout").textContent = data.force_logout_at ? `آخر إنهاء للجلسات: ${formatDateTime(data.force_logout_at)}` : "لم تُنفذ العملية بعد.";
+  };
+  const handleSystemControlsChange = async () => {
+    const { data } = await db.from("system_controls").select("maintenance_enabled,maintenance_message,force_logout_at").eq("id", "main").maybeSingle();
+    if (state.profile?.role === "owner") { await loadSystemControls(); return; }
+    const signedInAt = new Date(state.session?.user?.last_sign_in_at || state.session?.user?.created_at || 0).getTime();
+    if (data?.maintenance_enabled || (data?.force_logout_at && new Date(data.force_logout_at).getTime() > signedInAt)) { await db.auth.signOut(); location.reload(); }
+  };
 
   const setupRealtime = () => {
     if (realtimeChannel) db.removeChannel(realtimeChannel);
     realtimeChannel = db.channel(`admin-live-${state.profile.id}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "registration_settings" }, loadSettings)
+      .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, loadOwnerSettings)
+      .on("postgres_changes", { event: "*", schema: "public", table: "system_controls" }, handleSystemControlsChange)
       .on("postgres_changes", { event: "*", schema: "public", table: "registrations" }, payload => { loadRegistrations(); loadTrash(); if (payload.eventType === "INSERT") showAdminAlert("وصل طلب تسجيل جديد الآن.", "notice"); })
       .on("postgres_changes", { event: "*", schema: "public", table: "groups" }, () => { loadGroups(); loadTrash(); })
       .on("postgres_changes", { event: "*", schema: "public", table: "group_media" }, () => { loadMedia(); loadTrash(); })
@@ -223,7 +271,7 @@
   };
   const loadAll = async () => {
     const loaders = [loadSettings(), loadRegistrations(), loadGroups(), loadNews(), loadSlider(), loadVideos(), loadResources(), loadTrash()];
-    if (state.profile?.role === "owner") loaders.push(loadActivity());
+    if (state.profile?.role === "owner") loaders.push(loadActivity(), loadOwnerSettings(), loadSystemControls());
     try { await Promise.all(loaders); } catch (error) { showAdminAlert(`تعذر تحميل بعض البيانات: ${error.message}`, "error"); }
   };
 
@@ -314,6 +362,50 @@
     if (remove && confirm("نقل هذا الفيديو إلى سلة المحذوفات؟")) { try { await softDelete("video_items", remove.dataset.deleteVideo); await loadVideos(); await loadTrash(); } catch (error) { showAdminAlert(error.message, "error"); } }
   });
 
+  const ownerSettingsForm = document.getElementById("ownerSettingsForm");
+  ownerSettingsForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (state.profile?.role !== "owner") { showAdminAlert("هذه الصلاحية متاحة لمالك النظام فقط.", "error"); return; }
+    try {
+      const values = Object.fromEntries(new FormData(ownerSettingsForm));
+      const urlFields = ["map_url","whatsapp_url","facebook_url","instagram_url","youtube_url"];
+      urlFields.forEach(field => { const url = new URL(values[field].trim()); if (!["http:", "https:"].includes(url.protocol)) throw new Error(`الرابط في حقل ${ownerSettingsForm.elements[field].previousElementSibling.textContent} غير صحيح.`); });
+      const payload = { id: "contact", phone: values.phone.trim(), location_text: values.location_text.trim(), map_url: values.map_url.trim(), whatsapp_url: values.whatsapp_url.trim(), facebook_url: values.facebook_url.trim(), instagram_url: values.instagram_url.trim(), youtube_url: values.youtube_url.trim(), updated_by: state.profile.id };
+      const { error } = await db.from("site_settings").upsert(payload, { onConflict: "id" }); if (error) throw error;
+      await loadOwnerSettings(); showAdminAlert("تم حفظ روابط التواصل وتحديثها عند الزوار مباشرة.");
+    } catch (error) { showAdminAlert(error.message, "error"); }
+  });
+
+  const maintenanceForm = document.getElementById("maintenanceForm");
+  maintenanceForm.addEventListener("submit", async event => {
+    event.preventDefault(); if (state.profile?.role !== "owner") return;
+    try {
+      const enabled = maintenanceForm.elements.maintenance_enabled.checked;
+      const message = maintenanceForm.elements.maintenance_message.value.trim();
+      if (!message) throw new Error("اكتب رسالة الصيانة التي ستظهر للزوار.");
+      const returnAt = maintenanceForm.elements.expected_return_at.value;
+      const { error } = await db.from("system_controls").update({ maintenance_enabled: enabled, maintenance_message: message, expected_return_at: returnAt ? new Date(returnAt).toISOString() : null, updated_by: state.profile.id }).eq("id", "main"); if (error) throw error;
+      await loadSystemControls(); showAdminAlert(enabled ? "تم تشغيل وضع الصيانة؛ المالك وحده يستطيع الدخول الآن." : "تم إيقاف وضع الصيانة وإعادة فتح الموقع.");
+    } catch (error) { showAdminAlert(error.message, "error"); }
+  });
+  document.getElementById("retentionForm").addEventListener("submit", async event => {
+    event.preventDefault(); if (state.profile?.role !== "owner") return;
+    try {
+      const months = Number(event.currentTarget.elements.registration_retention_months.value);
+      if (!Number.isInteger(months) || months < 1 || months > 120) throw new Error("اختر مدة بين شهر واحد و120 شهرًا.");
+      const { error } = await db.from("system_controls").update({ registration_retention_months: months, updated_by: state.profile.id }).eq("id", "main"); if (error) throw error;
+      await loadSystemControls(); showAdminAlert("تم حفظ مدة الاحتفاظ بالتسجيلات.");
+    } catch (error) { showAdminAlert(error.message, "error"); }
+  });
+  document.getElementById("forceAdminLogout").addEventListener("click", async () => {
+    if (state.profile?.role !== "owner" || !confirm("سيتم تسجيل خروج جميع حسابات الإدارة المفتوحة. هل تريد المتابعة؟")) return;
+    try { const { error } = await db.from("system_controls").update({ force_logout_at: new Date().toISOString(), updated_by: state.profile.id }).eq("id", "main"); if (error) throw error; await loadSystemControls(); showAdminAlert("تم إنهاء جلسات الإدارة الحالية."); } catch (error) { showAdminAlert(error.message, "error"); }
+  });
+  document.getElementById("archiveOldRegistrations").addEventListener("click", async () => {
+    if (state.profile?.role !== "owner" || !confirm("ستنقل الطلبات الأقدم من المدة المحددة إلى سلة المحذوفات. هل تريد المتابعة؟")) return;
+    try { const { data, error } = await db.rpc("archive_old_registrations"); if (error) throw error; await loadRegistrations(); await loadTrash(); showAdminAlert(`تم نقل ${Number(data || 0).toLocaleString("ar-JO")} طلب قديم إلى السلة.`); } catch (error) { showAdminAlert(error.message, "error"); }
+  });
+
   document.getElementById("trashList").addEventListener("click", async event => {
     const restore = event.target.closest("[data-restore-table]"); const purge = event.target.closest("[data-purge-table]");
     try {
@@ -324,11 +416,11 @@
 
   document.getElementById("exportBackup").addEventListener("click", async () => {
     if (state.profile.role !== "owner") return;
-    try { const tables = ["registration_settings", "registrations", "groups", "group_media", "news", "slider_items", "video_items", "resources"]; const entries = await Promise.all(tables.map(async table => { const { data, error } = await db.from(table).select("*"); if (error) throw error; return [table, data || []]; })); const backup = { format: "kufrabeel-center-backup-v1", created_at: new Date().toISOString(), created_by: state.profile.full_name, data: Object.fromEntries(entries) }; downloadJson(backup, `نسخة-احتياطية-مركز-كفرأبيل-${new Date().toISOString().slice(0,10)}.json`); await logEvent("EXPORT", "backup", "تنزيل نسخة احتياطية كاملة"); showAdminAlert("تم إنشاء النسخة الاحتياطية وتنزيلها."); } catch (error) { showAdminAlert(error.message, "error"); }
+    try { const tables = ["site_settings", "system_controls", "registration_settings", "registrations", "groups", "group_media", "news", "slider_items", "video_items", "resources"]; const entries = await Promise.all(tables.map(async table => { const { data, error } = await db.from(table).select("*"); if (error) throw error; return [table, data || []]; })); const backup = { format: "kufrabeel-center-backup-v1", created_at: new Date().toISOString(), created_by: state.profile.full_name, data: Object.fromEntries(entries) }; downloadJson(backup, `نسخة-احتياطية-مركز-كفرأبيل-${new Date().toISOString().slice(0,10)}.json`); await logEvent("EXPORT", "backup", "تنزيل نسخة احتياطية كاملة"); showAdminAlert("تم إنشاء النسخة الاحتياطية وتنزيلها."); } catch (error) { showAdminAlert(error.message, "error"); }
   });
   document.getElementById("restoreBackup").addEventListener("click", async () => {
     if (state.profile.role !== "owner") return; const file = document.getElementById("backupFile").files[0]; if (!file) { showAdminAlert("اختر ملف النسخة الاحتياطية أولًا.", "error"); return; }
-    try { const backup = JSON.parse(await file.text()); if (backup.format !== "kufrabeel-center-backup-v1" || !backup.data) throw new Error("هذا الملف ليس نسخة احتياطية صالحة للموقع."); if (!confirm(`سيتم استعادة النسخة المنشأة بتاريخ ${formatDateTime(backup.created_at)}. هل تريد المتابعة؟`)) return; const order = ["registration_settings", "groups", "registrations", "news", "slider_items", "video_items", "resources", "group_media"]; for (const table of order) { const rows = backup.data[table]; if (!Array.isArray(rows) || !rows.length) continue; const { error } = await db.from(table).upsert(rows, { onConflict: table === "registration_settings" ? "program" : "id" }); if (error) throw new Error(`${table}: ${error.message}`); } const { error: sequenceError } = await db.rpc("sync_registration_sequence"); if (sequenceError) throw sequenceError; await logEvent("RESTORE", "backup", `استعادة نسخة ${backup.created_at || "غير مؤرخة"}`); await loadAll(); showAdminAlert("اكتملت استعادة النسخة الاحتياطية بنجاح."); } catch (error) { showAdminAlert(`تعذرت الاستعادة: ${error.message}`, "error"); }
+    try { const backup = JSON.parse(await file.text()); if (backup.format !== "kufrabeel-center-backup-v1" || !backup.data) throw new Error("هذا الملف ليس نسخة احتياطية صالحة للموقع."); if (!confirm(`سيتم استعادة النسخة المنشأة بتاريخ ${formatDateTime(backup.created_at)}. هل تريد المتابعة؟`)) return; const order = ["site_settings", "system_controls", "registration_settings", "groups", "registrations", "news", "slider_items", "video_items", "resources", "group_media"]; for (const table of order) { const rows = backup.data[table]; if (!Array.isArray(rows) || !rows.length) continue; const { error } = await db.from(table).upsert(rows, { onConflict: table === "registration_settings" ? "program" : "id" }); if (error) throw new Error(`${table}: ${error.message}`); } const { error: sequenceError } = await db.rpc("sync_registration_sequence"); if (sequenceError) throw sequenceError; await logEvent("RESTORE", "backup", `استعادة نسخة ${backup.created_at || "غير مؤرخة"}`); await loadAll(); showAdminAlert("اكتملت استعادة النسخة الاحتياطية بنجاح."); } catch (error) { showAdminAlert(`تعذرت الاستعادة: ${error.message}`, "error"); }
   });
 
   const init = async () => { if (!window.CenterDB?.configured) { setup.hidden = false; loginSection.hidden = true; return; } const { data: { session } } = await db.auth.getSession(); if (session) await requireStaff(session); };

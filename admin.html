@@ -13,8 +13,13 @@
 </head>
 <body class="admin-page">
   <header class="admin-header"><div class="container admin-header-inner">
-    <a class="brand" href="index.html"><img class="brand-logo" src="assets/brand/association-logo.png" alt="شعار الجمعية"><span class="brand-copy"><span class="brand-name">إدارة مركز كفرأبيل</span><span class="brand-affiliation">لوحة إدارة الموقع</span></span></a>
-    <a class="btn btn-outline admin-site-link" href="index.html">عرض الموقع</a>
+    <a class="brand" href="index.html"><img class="brand-logo" src="assets/brand/association-logo.png" alt="شعار جمعية المحافظة على القرآن الكريم"><span class="brand-copy"><span class="brand-name" id="adminBrandName">إدارة مركز كفرأبيل</span><span class="brand-affiliation" id="adminBrandAffiliation">لوحة إدارة الموقع</span></span></a>
+    <nav class="admin-public-links" aria-label="روابط سريعة للموقع">
+      <a href="index.html">الرئيسية</a>
+      <a href="groups.html">المجموعات القرآنية</a>
+      <a href="registration.html">تسجيل الطلبة</a>
+    </nav>
+    <div class="admin-header-actions"><span class="admin-portal-badge" id="adminPortalBadge" hidden>بوابة الإدارة</span><a class="btn btn-outline admin-site-link" href="index.html">عرض الموقع</a></div>
   </div></header>
 
   <main class="admin-main container">
@@ -31,7 +36,7 @@
     </section>
 
     <section class="admin-dashboard" id="adminDashboard" hidden>
-      <div class="admin-welcome"><div><span class="eyebrow">لوحة التحكم</span><h1>مرحبًا، <span id="adminName">إدارة المركز</span></h1><p>يمكنك إدارة التسجيل والمحتوى من مكان واحد.</p></div><div class="admin-identity"><span class="role-badge" id="adminRole"></span><button class="btn btn-outline" id="adminLogout" type="button">تسجيل الخروج</button></div></div>
+      <div class="admin-welcome"><div><span class="eyebrow" id="adminWelcomeEyebrow">لوحة التحكم</span><h1>مرحبًا، <span id="adminName">إدارة المركز</span></h1><p id="adminWelcomeText">يمكنك إدارة التسجيل والمحتوى من مكان واحد.</p></div><div class="admin-identity"><span class="role-badge" id="adminRole"></span><button class="btn btn-outline" id="adminLogout" type="button">تسجيل الخروج</button></div></div>
 
       <nav class="admin-tabs" aria-label="أقسام لوحة الإدارة">
         <button class="active" type="button" data-admin-view="overview">الرئيسية</button>
@@ -42,6 +47,8 @@
         <button type="button" data-admin-view="videos">المكتبة المرئية</button>
         <button type="button" data-admin-view="resources">الملفات العامة</button>
         <button type="button" data-admin-view="trash">سلة المحذوفات</button>
+        <button type="button" data-admin-view="system-control" id="systemControlTab" hidden>تحكم المالك</button>
+        <button type="button" data-admin-view="owner-settings" id="ownerSettingsTab" hidden>إعدادات التواصل</button>
         <button type="button" data-admin-view="backup" id="backupTab" hidden>النسخ الاحتياطي</button>
         <button type="button" data-admin-view="activity" id="activityTab" hidden>سجل النشاط</button>
       </nav>
@@ -105,6 +112,50 @@
         <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>سلة المحذوفات</h2><p>يمكن للإدارة استعادة العناصر. الحذف النهائي متاح لمالك النظام فقط ولا يمكن التراجع عنه.</p></div><button class="btn btn-outline" id="refreshTrash" type="button">تحديث السلة</button></div>
           <div class="admin-item-list trash-list" id="trashList"></div>
         </article>
+      </section>
+
+      <section class="admin-view" data-admin-panel="owner-settings" hidden>
+        <form class="admin-panel-card admin-form owner-settings-form" id="ownerSettingsForm">
+          <div class="admin-panel-heading"><div><h2>إعدادات التواصل الرسمية</h2><p>هذا القسم متاح لمالك النظام فقط، وأي تعديل محفوظ يظهر للزوار مباشرة.</p></div></div>
+          <div class="form-grid">
+            <label class="form-field"><span>رقم الهاتف</span><input name="phone" type="tel" dir="ltr" required></label>
+            <label class="form-field"><span>نص موقع المركز</span><input name="location_text" required></label>
+            <label class="form-field form-field-wide"><span>رابط الموقع على الخريطة</span><input name="map_url" type="url" dir="ltr" required></label>
+            <label class="form-field form-field-wide"><span>رابط واتساب</span><input name="whatsapp_url" type="url" dir="ltr" required></label>
+            <label class="form-field form-field-wide"><span>رابط Facebook</span><input name="facebook_url" type="url" dir="ltr" required></label>
+            <label class="form-field form-field-wide"><span>رابط Instagram</span><input name="instagram_url" type="url" dir="ltr" required></label>
+            <label class="form-field form-field-wide"><span>رابط YouTube</span><input name="youtube_url" type="url" dir="ltr" required></label>
+          </div>
+          <button class="btn" type="submit">حفظ إعدادات التواصل</button>
+        </form>
+      </section>
+
+      <section class="admin-view" data-admin-panel="system-control" hidden>
+        <div class="admin-two-columns">
+          <form class="admin-panel-card admin-form" id="maintenanceForm">
+            <div class="admin-panel-heading"><div><h2>وضع صيانة الموقع</h2><p>عند تشغيله يُمنع الزوار وحساب الإدارة من الدخول، ويبقى مالك النظام فقط قادرًا على إدارة الموقع.</p></div><span class="effective-status" id="maintenanceStatus">متوقف</span></div>
+            <label class="form-consent owner-toggle"><input name="maintenance_enabled" type="checkbox"><span>تشغيل وضع الصيانة</span></label>
+            <label class="form-field"><span>رسالة الصيانة للزوار</span><textarea name="maintenance_message" rows="4" required></textarea></label>
+            <label class="form-field"><span>موعد العودة المتوقع (اختياري)</span><input name="expected_return_at" type="datetime-local"></label>
+            <button class="btn" type="submit">حفظ وضع الصيانة</button>
+          </form>
+          <article class="admin-panel-card admin-form">
+            <div class="admin-panel-heading"><div><h2>إنهاء جلسات الإدارة</h2><p>يسجّل خروج جميع حسابات الإدارة المفتوحة حاليًا، ويطلب منها تسجيل الدخول من جديد. حساب المالك لا يتأثر.</p></div></div>
+            <button class="btn btn-outline owner-danger-action" id="forceAdminLogout" type="button">تسجيل خروج الإدارة الآن</button>
+            <small class="backup-note" id="lastForcedLogout">لم تُنفذ العملية بعد.</small>
+          </article>
+        </div>
+        <div class="admin-two-columns admin-subsection">
+          <form class="admin-panel-card admin-form" id="retentionForm">
+            <div class="admin-panel-heading"><div><h2>مدة الاحتفاظ بالتسجيلات</h2><p>حدد المدة التي تبقى فيها الطلبات داخل القائمة قبل اعتبارها قديمة.</p></div></div>
+            <label class="form-field"><span>مدة الاحتفاظ بالأشهر</span><input name="registration_retention_months" type="number" min="1" max="120" required></label>
+            <button class="btn" type="submit">حفظ المدة</button>
+          </form>
+          <article class="admin-panel-card admin-form">
+            <div class="admin-panel-heading"><div><h2>تنظيف التسجيلات القديمة</h2><p>ينقل الطلبات الأقدم من المدة المحددة إلى سلة المحذوفات؛ ويمكن استعادتها قبل الحذف النهائي.</p></div></div>
+            <button class="btn btn-outline owner-danger-action" id="archiveOldRegistrations" type="button">نقل التسجيلات القديمة إلى السلة</button>
+          </article>
+        </div>
       </section>
 
       <section class="admin-view" data-admin-panel="backup" hidden>

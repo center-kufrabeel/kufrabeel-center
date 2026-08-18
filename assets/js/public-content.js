@@ -5,6 +5,27 @@
   const db = CenterDB.client;
   const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
   const placeholder = '<div class="project-placeholder"><span class="project-mark" aria-hidden="true"></span></div>';
+  const accountLabel = (type, url, phone) => {
+    if (type === "facebook") return "Kufrabeel Quranic Center";
+    if (type === "whatsapp") return phone;
+    try {
+      const parts = new URL(url).pathname.split("/").filter(Boolean);
+      const value = decodeURIComponent(parts.at(-1) || "");
+      return value.startsWith("@") ? value : `@${value}`;
+    } catch { return "الحساب الرسمي"; }
+  };
+
+  const loadContactSettings = async () => {
+    const targets = document.querySelectorAll("[data-contact-href], [data-contact-text], [data-contact-label]");
+    if (!targets.length) return;
+    const { data, error } = await db.from("site_settings").select("phone,location_text,map_url,whatsapp_url,facebook_url,instagram_url,youtube_url").eq("id", "contact").maybeSingle();
+    if (error || !data) return;
+    const hrefs = { phone: `tel:${data.phone.replace(/[^+\d]/g, "")}`, map: data.map_url, whatsapp: data.whatsapp_url, facebook: data.facebook_url, instagram: data.instagram_url, youtube: data.youtube_url };
+    document.querySelectorAll("[data-contact-href]").forEach(element => { const href = hrefs[element.dataset.contactHref]; if (href) element.href = href; });
+    document.querySelectorAll('[data-contact-text="phone"]').forEach(element => { element.textContent = data.phone; });
+    document.querySelectorAll('[data-contact-text="location"]').forEach(element => { element.textContent = data.location_text; });
+    document.querySelectorAll("[data-contact-label]").forEach(element => { const type = element.dataset.contactLabel; element.textContent = accountLabel(type, hrefs[type], data.phone); });
+  };
 
   const groupCard = item => `<a class="project-card reveal visible" href="group.html?id=${encodeURIComponent(item.slug)}"><div class="project-visual">${item.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.name)}" loading="lazy">` : placeholder}</div><div class="project-card-copy"><h3>${escapeHtml(item.name)}</h3></div></a>`;
 
@@ -79,6 +100,7 @@
   loadResources();
   loadNews();
   loadGroupDetails();
+  loadContactSettings();
 
   let refreshTimer;
   const debounce = callback => {
@@ -91,5 +113,6 @@
     .on("postgres_changes", { event: "*", schema: "public", table: "news" }, () => debounce(loadNews))
     .on("postgres_changes", { event: "*", schema: "public", table: "resources" }, () => debounce(loadResources))
     .on("postgres_changes", { event: "*", schema: "public", table: "slider_items" }, () => window.dispatchEvent(new CustomEvent("center:slider-updated")))
+    .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, () => debounce(loadContactSettings))
     .subscribe();
 })();

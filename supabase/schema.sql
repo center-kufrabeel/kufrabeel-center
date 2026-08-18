@@ -66,6 +66,19 @@ as $$
   select coalesce(public.current_user_role() = 'owner', false);
 $$;
 
+create table if not exists public.site_settings (
+  id text primary key check (id = 'contact'),
+  phone text not null,
+  location_text text not null,
+  map_url text not null,
+  whatsapp_url text not null,
+  facebook_url text not null,
+  instagram_url text not null,
+  youtube_url text not null,
+  updated_at timestamptz not null default timezone('utc', now()),
+  updated_by uuid references auth.users(id) on delete set null
+);
+
 create table if not exists public.registration_settings (
   program text primary key check (program in ('permanent', 'tajweed')),
   title text not null,
@@ -193,7 +206,7 @@ create index if not exists audit_logs_created_at_idx on public.audit_logs(create
 do $$
 declare table_name text;
 begin
-  foreach table_name in array array['profiles','registrations','groups','news','slider_items','video_items','resources']
+  foreach table_name in array array['profiles','site_settings','registrations','groups','news','slider_items','video_items','resources']
   loop
     execute format('drop trigger if exists set_%I_updated_at on public.%I', table_name, table_name);
     execute format('create trigger set_%I_updated_at before update on public.%I for each row execute procedure public.set_updated_at()', table_name, table_name);
@@ -205,6 +218,10 @@ values
   ('permanent', 'التسجيل في النادي الدائم', false),
   ('tajweed', 'التسجيل في دورات التجويد', false)
 on conflict (program) do nothing;
+
+insert into public.site_settings (id, phone, location_text, map_url, whatsapp_url, facebook_url, instagram_url, youtube_url)
+values ('contact', '0777120841', 'إربد — لواء الكورة — كفرأبيل', 'https://maps.app.goo.gl/kMnVGHEGyxCKAeeh9?g_st=aw', 'https://wa.me/962777120841', 'https://www.facebook.com/share/1BbQF7fhoz/', 'https://www.instagram.com/kufrabil_center_quranic/', 'https://www.youtube.com/@kufrabilcenterquranic')
+on conflict (id) do nothing;
 
 insert into public.groups (slug, name, gender, supervisor_name, student_count, student_ages, establishment, hafiz_count, tajweed_achievement, average_memorization, achievements, image_url, sort_order)
 values
@@ -240,6 +257,7 @@ from (values
 where not exists (select 1 from public.slider_items);
 
 alter table public.profiles enable row level security;
+alter table public.site_settings enable row level security;
 alter table public.registration_settings enable row level security;
 alter table public.registrations enable row level security;
 alter table public.groups enable row level security;
@@ -252,7 +270,8 @@ alter table public.audit_logs enable row level security;
 
 -- الصلاحيات الأساسية للأدوار؛ تبقى حدود الوصول الفعلية محكومة بسياسات RLS أدناه.
 grant usage on schema public to anon, authenticated;
-grant select on public.registration_settings, public.groups, public.group_media, public.news, public.slider_items, public.video_items, public.resources to anon, authenticated;
+grant select on public.site_settings, public.registration_settings, public.groups, public.group_media, public.news, public.slider_items, public.video_items, public.resources to anon, authenticated;
+grant insert, update on public.site_settings to authenticated;
 grant insert on public.registrations to anon, authenticated;
 grant select, insert, update, delete on public.profiles, public.registration_settings, public.registrations, public.groups, public.group_media, public.news, public.slider_items, public.video_items, public.resources to authenticated;
 grant select on public.audit_logs to authenticated;
@@ -272,6 +291,13 @@ create policy registration_settings_public_read on public.registration_settings 
 drop policy if exists registration_settings_staff_update on public.registration_settings;
 create policy registration_settings_staff_update on public.registration_settings for update to authenticated
 using (public.is_staff()) with check (public.is_staff());
+
+drop policy if exists site_settings_public_read on public.site_settings;
+create policy site_settings_public_read on public.site_settings for select to anon, authenticated using (true);
+drop policy if exists site_settings_owner_insert on public.site_settings;
+create policy site_settings_owner_insert on public.site_settings for insert to authenticated with check (public.is_owner());
+drop policy if exists site_settings_owner_update on public.site_settings;
+create policy site_settings_owner_update on public.site_settings for update to authenticated using (public.is_owner()) with check (public.is_owner());
 
 drop policy if exists registrations_public_insert_when_open on public.registrations;
 create policy registrations_public_insert_when_open on public.registrations for insert to anon, authenticated
@@ -375,7 +401,7 @@ $$;
 do $$
 declare table_name text;
 begin
-  foreach table_name in array array['profiles','registration_settings','registrations','groups','group_media','news','slider_items','video_items','resources']
+  foreach table_name in array array['profiles','site_settings','registration_settings','registrations','groups','group_media','news','slider_items','video_items','resources']
   loop
     execute format('drop trigger if exists audit_%I_changes on public.%I', table_name, table_name);
     execute format('create trigger audit_%I_changes after insert or update or delete on public.%I for each row execute procedure public.record_staff_activity()', table_name, table_name);
@@ -386,7 +412,7 @@ end $$;
 do $$
 declare table_name text;
 begin
-  foreach table_name in array array['registration_settings','registrations','groups','group_media','news','slider_items','video_items','resources','audit_logs']
+  foreach table_name in array array['site_settings','registration_settings','registrations','groups','group_media','news','slider_items','video_items','resources','audit_logs']
   loop
     if not exists (
       select 1 from pg_publication_tables

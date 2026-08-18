@@ -359,7 +359,9 @@ img, svg { display: block; max-width: 100%; }
 .footer-col li + li { margin-top: 6px; }
 .footer-col a:hover { color: #fff; }
 .footer-bottom { margin-top: 32px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.12); text-align: center; font-size: .8rem; }
-.site-credit { margin-top: 5px; color: rgba(255,255,255,.22); font-size: 9px; text-align: center; direction: ltr; }
+.site-credit { margin-top: 10px; color: #efd487; font-family: "Alexandria", sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: .2px; line-height: 1.6; text-align: center; direction: ltr; }
+.site-credit a { color: inherit; transition: color .2s ease; }
+.site-credit a:hover { color: #fff; }
 
 /* Inner pages */
 .page-hero { position: relative; overflow: hidden; padding: 74px 0; background: linear-gradient(145deg, var(--green-950), var(--green-700)); color: #fff; }
@@ -591,6 +593,23 @@ img, svg { display: block; max-width: 100%; }
   .teacher-grid { grid-template-columns: 1fr; }
 }
 
+/* وضع الصيانة وتحكم المالك */
+.owner-toggle { padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--green-50); }
+.owner-danger-action { align-self: flex-start; }
+.maintenance-page { min-height: 100vh; background: var(--green-950); }
+.maintenance-shell { min-height: 100vh; padding: 28px; display: grid; place-items: center; background: radial-gradient(circle at 20% 15%, rgba(203,166,78,.18), transparent 28%), linear-gradient(145deg, #073a31, #116651); }
+.maintenance-card { position: relative; width: min(620px, 100%); padding: clamp(32px, 6vw, 64px); overflow: hidden; border: 1px solid rgba(255,255,255,.55); border-radius: 30px; text-align: center; background: rgba(255,253,250,.97); box-shadow: 0 30px 90px rgba(0,0,0,.28); }
+.maintenance-card::after { content: ""; position: absolute; left: -75px; bottom: -90px; width: 220px; height: 220px; border: 34px solid rgba(203,166,78,.12); border-radius: 50%; }
+.maintenance-card img { width: 92px; height: 92px; margin-bottom: 20px; object-fit: contain; }
+.maintenance-label { display: block; margin-bottom: 12px; color: var(--gold-600); font-family: "Alexandria", sans-serif; font-weight: 800; }
+.maintenance-card h1 { margin-bottom: 15px; color: var(--green-950); font-family: "Alexandria", sans-serif; font-size: clamp(2rem, 6vw, 3.35rem); }
+.maintenance-card > p { max-width: 470px; margin: 0 auto; color: var(--muted); font-size: 1.05rem; line-height: 2; }
+.maintenance-return { position: relative; z-index: 1; margin: 28px 0 22px; padding: 17px; border-radius: 16px; color: var(--green-950); background: var(--green-50); }
+.maintenance-return span, .maintenance-return strong { display: block; }
+.maintenance-return span { margin-bottom: 5px; color: var(--muted); font-size: .8rem; }
+.maintenance-owner-link { position: relative; z-index: 1; color: var(--green-800); font-size: .78rem; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 520px) { .maintenance-shell { padding: 14px; } .maintenance-card { padding: 34px 20px; border-radius: 23px; } }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -601,6 +620,11 @@ img, svg { display: block; max-width: 100%; }
 .admin-header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.96); }
 .admin-header-inner { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .admin-header .brand-logo { width: 52px; height: 52px; }
+.admin-public-links { display: none; align-items: center; gap: 4px; }
+.admin-public-links a { padding: 9px 11px; border-radius: 9px; color: #32443e; font-size: .84rem; font-weight: 700; }
+.admin-public-links a:hover { color: var(--green-900); background: var(--green-100); }
+.admin-header-actions { display: flex; align-items: center; gap: 10px; }
+.admin-portal-badge { padding: 7px 11px; border-radius: 30px; color: var(--green-900); background: var(--green-100); font-size: .72rem; font-weight: 800; }
 .admin-main { padding-block: 48px 80px; }
 .admin-auth-card { width: min(500px, 100%); margin: 7vh auto; padding: 34px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; box-shadow: var(--shadow-lg); }
 .admin-auth-card h1 { margin: 10px 0; color: var(--green-950); font-family: "Alexandria", sans-serif; font-size: 1.8rem; }
@@ -617,6 +641,46 @@ img, svg { display: block; max-width: 100%; }
 .admin-tabs button.active { background: var(--green-900); color: #fff; }
 .admin-tab-badge { min-width: 20px; height: 20px; margin-inline-start: 5px; padding-inline: 5px; display: inline-grid; place-items: center; border-radius: 20px; background: #c64332; color: #fff; font-size: .68rem; }
 .admin-tabs button.active .admin-tab-badge { background: var(--gold-400); color: var(--green-950); }
+
+/* واجهة إدارة المركز: هوية قريبة من صفحة الزوار، مستقلة عن لوحة المالك */
+.role-admin { background: #fffdfa; }
+.role-admin .admin-header { z-index: 1000; background: rgba(255,253,250,.98); backdrop-filter: blur(14px); }
+.role-admin .admin-header-inner { min-height: 86px; }
+.role-admin .admin-header .brand-logo { width: 64px; height: 64px; }
+.role-admin .admin-public-links { display: flex; }
+.role-admin .admin-main.container { width: 100%; max-width: none; padding: 0 0 80px; }
+.role-admin .admin-dashboard { min-height: calc(100vh - 87px); }
+.role-admin .admin-welcome {
+  position: relative;
+  isolation: isolate;
+  min-height: 300px;
+  margin: 0 0 32px;
+  padding: 62px max(30px, calc((100vw - 1180px) / 2));
+  overflow: hidden;
+  color: #fff;
+  background-color: var(--green-900);
+  background-image: linear-gradient(45deg, rgba(255,255,255,.045) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.045) 75%), linear-gradient(45deg, rgba(255,255,255,.045) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.045) 75%);
+  background-position: 0 0, 28px 28px;
+  background-size: 56px 56px;
+}
+.role-admin .admin-welcome::after { content: ""; position: absolute; z-index: -1; inset-inline-start: -90px; bottom: -150px; width: 360px; height: 360px; border: 58px solid rgba(203,166,78,.12); border-radius: 50%; }
+.role-admin .admin-welcome h1 { max-width: 780px; color: #fff; font-size: clamp(2rem, 5vw, 3.5rem); }
+.role-admin .admin-welcome p { color: rgba(255,255,255,.82); font-size: 1.04rem; }
+.role-admin .admin-welcome .eyebrow { color: #efd487; }
+.role-admin .admin-welcome .eyebrow::after { background: #efd487; }
+.role-admin .admin-welcome .role-badge { color: #fff; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); }
+.role-admin .admin-welcome .btn-outline { color: #fff; border-color: rgba(255,255,255,.55); }
+.role-admin .admin-welcome .btn-outline:hover { color: var(--green-950); background: #fff; }
+.role-admin .admin-tabs,
+.role-admin .admin-alert,
+.role-admin .admin-view { width: min(var(--container), calc(100% - 40px)); margin-inline: auto; }
+.role-admin .admin-tabs { position: sticky; top: 98px; z-index: 35; margin-bottom: 28px; padding: 9px; border-radius: 18px; box-shadow: var(--shadow-sm); }
+.role-admin .admin-panel-card { border-color: #d9e6e0; box-shadow: 0 16px 45px rgba(10,73,61,.07); }
+.role-admin .admin-stat-grid article { border-top: 3px solid var(--gold-400); }
+
+/* لوحة المالك تبقى لوحة نظام مستقلة */
+.role-owner .admin-header { border-bottom-color: rgba(203,166,78,.3); }
+.role-owner .admin-welcome { padding: 24px 28px; border: 1px solid rgba(203,166,78,.28); border-radius: 20px; background: linear-gradient(135deg, #fff, #fbf6e8); }
 .admin-view { animation: adminFade .25s ease; }
 @keyframes adminFade { from { opacity: 0; transform: translateY(5px); } }
 .admin-alert { position: sticky; top: 88px; z-index: 40; margin-bottom: 18px; padding: 13px 16px; border-radius: 12px; box-shadow: var(--shadow-sm); }
@@ -714,6 +778,23 @@ img, svg { display: block; max-width: 100%; }
   .trash-item { grid-template-columns: 74px 1fr; }
   .trash-item .file-chip { width: 74px; }
   .item-actions { grid-column: 1/-1; justify-content: flex-end; }
+}
+
+@media (max-width: 980px) {
+  .role-admin .admin-public-links { display: none; }
+  .role-admin .admin-header-inner { min-height: 82px; }
+  .role-admin .admin-header .brand-logo { width: 54px; height: 54px; }
+  .role-admin .admin-welcome { min-height: 270px; padding-block: 48px; }
+  .role-admin .admin-tabs { top: 91px; }
+}
+
+@media (max-width: 650px) {
+  .admin-portal-badge { display: none; }
+  .role-admin .admin-header-actions { flex: 0 0 auto; }
+  .role-admin .admin-site-link { padding-inline: 10px; }
+  .role-admin .admin-welcome { min-height: 0; padding: 42px 20px; }
+  .role-admin .admin-tabs, .role-admin .admin-alert, .role-admin .admin-view { width: calc(100% - 24px); }
+  .role-admin .admin-tabs { top: 89px; }
 }
 
 /* الحسابات الرسمية */
