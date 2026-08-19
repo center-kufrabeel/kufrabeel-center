@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#073a31">
   <title>إدارة الموقع | مركز كفرأبيل القرآني</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,12 +23,19 @@
 
     <section class="admin-auth-card" id="adminLogin">
       <span class="eyebrow">دخول آمن</span><h1>تسجيل دخول الإدارة</h1><p>هذه الصفحة مخصصة لمالك النظام وإدارة المركز فقط.</p>
-      <form id="adminLoginForm" class="admin-login-form">
+      <form id="adminLoginForm" class="admin-login-form" method="post" action="admin.html">
         <label class="form-field"><span>اسم المستخدم</span><input type="text" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="أدخل اسم المستخدم" required></label>
         <label class="form-field"><span>كلمة المرور</span><input type="password" name="password" autocomplete="current-password" minlength="8" required></label>
         <div class="form-alert" id="loginAlert" role="alert" hidden></div>
         <button class="btn" type="submit">دخول لوحة الإدارة</button>
       </form>
+      <script>
+        (() => {
+          const form = document.getElementById("adminLoginForm");
+          form?.addEventListener("submit", event => event.preventDefault());
+          if (location.search) history.replaceState(null, document.title, `${location.pathname}${location.hash}`);
+        })();
+      </script>
     </section>
 
     <section class="admin-dashboard" id="adminDashboard" hidden>
@@ -52,12 +60,21 @@
 
       <section class="admin-view active" data-admin-panel="overview">
         <div class="admin-stat-grid" id="adminStats"></div>
-        <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>فتح وإغلاق التسجيل</h2><p>يتوقف النموذج وقاعدة البيانات معًا عند إغلاق البرنامج.</p></div></div><div class="registration-switches" id="registrationSwitches"></div></article>
+        <div class="registration-program-admin">
+          <form class="admin-panel-card admin-form registration-program-form" id="registrationProgramForm">
+            <div class="admin-panel-heading"><div><h2>إضافة نوع تسجيل</h2><p>أنشئ برنامجًا جديدًا، ثم افتحه وحدد مواعيده من القائمة.</p></div></div>
+            <label class="form-field"><span>اسم نوع التسجيل</span><input name="title" maxlength="120" placeholder="مثال: التسجيل في النادي الصيفي" required></label>
+            <label class="form-field"><span>وصف مختصر</span><textarea name="description" rows="3" maxlength="240" placeholder="نبذة تظهر للزائر أسفل اسم البرنامج" required></textarea></label>
+            <label class="form-field"><span>رسالة الإغلاق</span><textarea name="closed_message" rows="2" maxlength="240" required>التسجيل مغلق حاليًا، وسيُعلن عن موعد فتحه لاحقًا.</textarea></label>
+            <button class="btn" type="submit">إضافة نوع التسجيل</button>
+          </form>
+          <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>فتح وإغلاق التسجيل</h2><p>يتوقف النموذج وقاعدة البيانات معًا عند إغلاق البرنامج.</p></div></div><div class="registration-switches" id="registrationSwitches"></div></article>
+        </div>
       </section>
 
       <section class="admin-view" data-admin-panel="registrations" hidden>
         <article class="admin-panel-card"><div class="admin-panel-heading"><div><h2>طلبات التسجيل</h2><p>البحث والمراجعة والتصدير إلى ملف Excel.</p></div><div class="admin-actions"><button class="btn btn-outline" id="refreshRegistrations" type="button">تحديث</button><button class="btn" id="exportRegistrations" type="button">تنزيل Excel</button></div></div>
-          <div class="admin-filters"><input id="registrationSearch" type="search" placeholder="ابحث بالاسم أو الهاتف"><select id="registrationProgramFilter"><option value="">كل البرامج</option><option value="permanent">النادي الدائم</option><option value="tajweed">دورات التجويد</option></select><select id="registrationGenderFilter"><option value="">الذكور والإناث</option><option value="male">ذكور</option><option value="female">إناث</option></select></div>
+          <div class="admin-filters"><input id="registrationSearch" type="search" placeholder="ابحث بالاسم أو الهاتف"><select id="registrationProgramFilter"><option value="">كل البرامج</option></select><select id="registrationGenderFilter"><option value="">الذكور والإناث</option><option value="male">ذكور</option><option value="female">إناث</option></select></div>
           <div class="admin-table-wrap"><table class="admin-table registrations-table"><thead><tr><th>الاسم</th><th>الجنس</th><th>الميلاد</th><th>الهاتف</th><th>ولي الأمر</th><th>البرنامج</th><th>الحالة</th><th>ملاحظات الإدارة</th><th>التاريخ</th><th></th></tr></thead><tbody id="registrationsTable"></tbody></table></div>
         </article>
       </section>

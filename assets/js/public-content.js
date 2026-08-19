@@ -56,10 +56,12 @@
       const date = new Date(`${item.news_date}T12:00:00`);
       const day = new Intl.DateTimeFormat("ar-JO", { day: "2-digit" }).format(date);
       const monthYear = new Intl.DateTimeFormat("ar-JO", { month: "long", year: "numeric" }).format(date);
-      const visual = item.image_url
+      const hasImage = Boolean(item.image_url);
+      const visual = hasImage
         ? `<div class="news-visual"><img class="news-image" src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" loading="lazy"><span class="news-visual-label">من أخبار المركز</span></div>`
-        : '<div class="news-visual news-placeholder" aria-hidden="true"><span>خبر</span><strong>مركز كفرأبيل القرآني</strong></div>';
-      return `<article class="news-item ${index === 0 ? "news-featured" : "news-compact"} reveal visible">${visual}<div class="news-copy"><div class="news-meta"><span class="news-badge">إعلان رسمي</span><time class="news-date" datetime="${item.news_date}"><strong>${day}</strong><span>${monthYear}</span></time></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.body)}</p></div></article>`;
+        : "";
+      const announcementMark = hasImage ? "" : '<span class="news-announcement-mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 10.5v3a2 2 0 0 0 2 2h1.1l1.2 4h2.2l-1.1-4H11l7 3V5.5l-7 3H6a2 2 0 0 0-2 2Z"/><path d="M20 9v6M3 11v2"/></svg></span>';
+      return `<article class="news-item ${index === 0 ? "news-featured" : "news-compact"} ${hasImage ? "news-has-image" : "news-text-only"} reveal visible">${visual}<div class="news-copy">${announcementMark}<div class="news-meta"><span class="news-badge">إعلان رسمي</span><time class="news-date" datetime="${item.news_date}"><strong>${day}</strong><span>${monthYear}</span></time></div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.body)}</p></div></article>`;
     }).join("");
   };
 

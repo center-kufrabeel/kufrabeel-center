@@ -80,10 +80,15 @@ create table if not exists public.site_settings (
 );
 
 create table if not exists public.registration_settings (
-  program text primary key check (program in ('permanent', 'tajweed')),
+  program text primary key check (char_length(program) between 3 and 100),
   title text not null,
+  description text,
   is_open boolean not null default false,
+  is_archived boolean not null default false,
+  sort_order integer not null default 100,
   closed_message text not null default 'التسجيل مغلق حاليًا، وسيُعلن عن موعد فتحه لاحقًا.',
+  created_at timestamptz not null default timezone('utc', now()),
+  created_by uuid references auth.users(id) on delete set null,
   updated_at timestamptz not null default timezone('utc', now()),
   updated_by uuid references auth.users(id)
 );
@@ -213,10 +218,10 @@ begin
   end loop;
 end $$;
 
-insert into public.registration_settings (program, title, is_open)
+insert into public.registration_settings (program, title, description, is_open, sort_order)
 values
-  ('permanent', 'التسجيل في النادي الدائم', false),
-  ('tajweed', 'التسجيل في دورات التجويد', false)
+  ('permanent', 'التسجيل في النادي الدائم', 'الحفظ والمراجعة والمتابعة طوال العام', false, 10),
+  ('tajweed', 'التسجيل في دورات التجويد', 'مسارات التلاوة والتجويد بمستوياتها', false, 20)
 on conflict (program) do nothing;
 
 insert into public.site_settings (id, phone, location_text, map_url, whatsapp_url, facebook_url, instagram_url, youtube_url)
@@ -291,6 +296,9 @@ create policy registration_settings_public_read on public.registration_settings 
 drop policy if exists registration_settings_staff_update on public.registration_settings;
 create policy registration_settings_staff_update on public.registration_settings for update to authenticated
 using (public.is_staff()) with check (public.is_staff());
+drop policy if exists registration_settings_staff_insert on public.registration_settings;
+create policy registration_settings_staff_insert on public.registration_settings for insert to authenticated
+with check (public.is_staff());
 
 drop policy if exists site_settings_public_read on public.site_settings;
 create policy site_settings_public_read on public.site_settings for select to anon, authenticated using (true);

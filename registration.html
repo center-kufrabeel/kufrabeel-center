@@ -23,20 +23,14 @@
     <section class="section"><div class="container registration-layout">
       <div class="registration-intro">
         <div class="section-heading"><span class="eyebrow">طلب التحاق جديد</span><h2 class="section-title">اختر البرنامج وأدخل البيانات</h2><p class="section-desc">تُرسل البيانات مباشرة إلى إدارة المركز، ولن تكون ظاهرة للزوار.</p></div>
-        <div class="registration-programs" aria-label="حالة التسجيل في البرامج">
-          <article class="program-option-status" data-program-status="permanent"><span class="status-dot"></span><div><strong>النادي الدائم</strong><small>جارٍ التحقق من حالة التسجيل…</small></div></article>
-          <article class="program-option-status" data-program-status="tajweed"><span class="status-dot"></span><div><strong>دورات التجويد</strong><small>جارٍ التحقق من حالة التسجيل…</small></div></article>
-        </div>
+        <div class="registration-programs" id="registrationProgramsStatus" aria-label="حالة التسجيل في البرامج"><article class="program-option-status"><span class="status-dot"></span><div><strong>برامج المركز</strong><small>جارٍ التحقق من حالة التسجيل…</small></div></article></div>
         <div class="privacy-note"><strong>خصوصية البيانات</strong><p>تُستخدم المعلومات للتواصل بخصوص التسجيل فقط، ولا يستطيع الاطلاع عليها إلا الحساب الإداري المخوّل.</p></div>
       </div>
 
       <form class="student-registration-form" id="studentRegistrationForm" novalidate>
         <div class="form-alert" id="registrationAlert" role="status" aria-live="polite" hidden></div>
         <div class="form-section-title"><span>01</span><div><h3>البرنامج المطلوب</h3><p>اختر أحد البرامج المفتوحة للتسجيل.</p></div></div>
-        <div class="program-choice-grid">
-          <label class="program-choice"><input type="radio" name="program" value="permanent" required><span><strong>النادي الدائم</strong><small>الحفظ والمراجعة والمتابعة طوال العام</small></span></label>
-          <label class="program-choice"><input type="radio" name="program" value="tajweed" required><span><strong>دورات التجويد</strong><small>مسارات التلاوة والتجويد بمستوياتها</small></span></label>
-        </div>
+        <div class="program-choice-grid" id="registrationProgramChoices"><p class="empty-message">جارٍ تحميل البرامج المتاحة…</p></div>
 
         <div class="form-section-title"><span>02</span><div><h3>بيانات الطالب أو الطالبة</h3><p>يرجى كتابة البيانات بصورة صحيحة.</p></div></div>
         <div class="form-grid">

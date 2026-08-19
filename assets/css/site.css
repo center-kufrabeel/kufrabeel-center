@@ -313,6 +313,54 @@ img, svg { display: block; max-width: 100%; }
 .news-compact .news-copy h3 { font-size: 1rem; }
 .news-compact .news-copy p { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .news-compact .news-placeholder span { font-size: 2.8rem; }
+.news-text-only {
+  position: relative;
+  isolation: isolate;
+  grid-column: 1/-1;
+  display: block;
+  min-height: 0;
+  overflow: hidden;
+  border-inline-start: 5px solid var(--gold-500);
+  background: linear-gradient(135deg, #fff 0%, #fff 70%, rgba(236,205,112,.1) 100%);
+}
+.news-text-only::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: clamp(110px, 15vw, 180px);
+  aspect-ratio: 1;
+  inset-inline-end: clamp(24px, 5vw, 64px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: url("../brand/association-logo.png") center/contain no-repeat;
+  opacity: .045;
+  pointer-events: none;
+}
+.news-text-only .news-copy {
+  position: relative;
+  min-height: 225px;
+  padding: clamp(28px, 4vw, 48px);
+  padding-inline-start: clamp(112px, 13vw, 160px);
+}
+.news-text-only.news-compact .news-copy { padding: clamp(28px, 4vw, 48px); padding-inline-start: clamp(112px, 13vw, 160px); }
+.news-text-only.news-compact .news-copy h3 { font-size: clamp(1.08rem,2vw,1.55rem); }
+.news-text-only.news-compact .news-copy p { display: block; overflow: visible; -webkit-line-clamp: initial; }
+.news-announcement-mark {
+  position: absolute;
+  inset-inline-start: clamp(28px, 4vw, 52px);
+  top: 50%;
+  width: 64px;
+  height: 64px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(185,133,30,.28);
+  border-radius: 18px;
+  background: var(--gold-100);
+  color: var(--green-900);
+  box-shadow: 0 12px 28px rgba(5,54,45,.08);
+}
+.news-announcement-mark svg { width: 31px; height: 31px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Staff */
 .tabs { width: max-content; max-width: 100%; margin: 0 auto 30px; padding: 6px; display: flex; gap: 6px; border-radius: 14px; background: var(--green-100); }
@@ -564,6 +612,11 @@ img, svg { display: block; max-width: 100%; }
   .news-heading-status { min-width: 0; width: 100%; }
   .news-list { grid-template-columns: 1fr; }
   .news-featured, .news-compact { grid-column: auto; grid-template-columns: 1fr; min-height: 0; }
+  .news-text-only { display: block; border-inline-start-width: 4px; }
+  .news-text-only .news-copy, .news-text-only.news-compact .news-copy { min-height: 0; padding: 24px 18px 26px; padding-block-start: 86px; }
+  .news-announcement-mark { inset-inline-start: 18px; top: 20px; width: 50px; height: 50px; transform: none; border-radius: 14px; }
+  .news-announcement-mark svg { width: 25px; height: 25px; }
+  .news-text-only::after { width: 92px; inset-inline-end: 18px; top: 20px; transform: none; }
   .news-visual { min-height: 210px; }
   .news-featured .news-visual { min-height: 260px; }
   .news-copy { padding: 22px 18px; }
@@ -682,6 +735,9 @@ img, svg { display: block; max-width: 100%; }
 .admin-panel-heading p { color: var(--muted); font-size: .78rem; }
 .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .registration-switches { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.registration-program-admin { display: grid; grid-template-columns: minmax(280px,.72fr) minmax(0,1.7fr); align-items: start; gap: 20px; }
+.registration-program-form { position: sticky; top: 92px; }
+.registration-program-admin .registration-switches { grid-template-columns: 1fr; }
 .registration-switch { padding: 17px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1px solid var(--line); border-radius: 14px; }
 .registration-switch strong, .registration-switch span { display: block; }
 .registration-switch strong { color: var(--green-950); }
@@ -766,6 +822,8 @@ img, svg { display: block; max-width: 100%; }
 }
 
 @media (max-width: 980px) {
+  .registration-program-admin { grid-template-columns: 1fr; }
+  .registration-program-form { position: static; }
   .role-admin .admin-header-inner { min-height: 82px; }
   .role-admin .admin-header .brand-logo { width: 54px; height: 54px; }
   .role-admin .admin-tabs { top: 91px; }

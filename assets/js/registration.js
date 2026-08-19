@@ -6,11 +6,13 @@
 
   const alertBox = document.getElementById("registrationAlert");
   const submitButton = form.querySelector("[type='submit']");
-  const programInputs = [...form.querySelectorAll("input[name='program']")];
-  const statusCards = [...document.querySelectorAll("[data-program-status]")];
-  const programLabels = { permanent: "النادي الدائم", tajweed: "دورات التجويد" };
+  const statusContainer = document.getElementById("registrationProgramsStatus");
+  const choiceContainer = document.getElementById("registrationProgramChoices");
   let settings = {};
   form.elements.birth_date.max = new Date().toISOString().slice(0, 10);
+
+  const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
+  const selectedProgram = () => form.querySelector("input[name='program']:checked")?.value || "";
 
   const isProgramOpen = item => {
     const now = Date.now();
@@ -36,51 +38,53 @@
   };
 
   const updateSubmitState = () => {
-    const selected = form.elements.program.value;
+    const selected = selectedProgram();
     submitButton.disabled = !selected || !isProgramOpen(settings[selected]);
   };
 
-  const paintSettings = () => {
-    statusCards.forEach(card => {
-      const key = card.dataset.programStatus;
-      const item = settings[key];
-      const message = card.querySelector("small");
+  const paintSettings = items => {
+    if (!items.length) {
+      statusContainer.innerHTML = '<p class="empty-message">لا توجد برامج تسجيل معلنة حاليًا.</p>';
+      choiceContainer.innerHTML = '<p class="empty-message">لا توجد برامج متاحة للاختيار.</p>';
+      updateSubmitState();
+      return;
+    }
+    statusContainer.innerHTML = items.map(item => {
       const open = isProgramOpen(item);
-      card.classList.toggle("open", open);
-      card.classList.toggle("closed", !open);
-      message.textContent = open ? "التسجيل مفتوح الآن" : scheduleMessage(item);
-      const input = programInputs.find(option => option.value === key);
-      input.disabled = !open;
-      input.closest(".program-choice").classList.toggle("disabled", !open);
-      if (!open && input.checked) input.checked = false;
-    });
+      return `<article class="program-option-status ${open ? "open" : "closed"}" data-program-status="${escapeHtml(item.program)}"><span class="status-dot"></span><div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(open ? "التسجيل مفتوح الآن" : scheduleMessage(item))}</small></div></article>`;
+    }).join("");
+    choiceContainer.innerHTML = items.map(item => {
+      const open = isProgramOpen(item);
+      return `<label class="program-choice ${open ? "" : "disabled"}"><input type="radio" name="program" value="${escapeHtml(item.program)}" ${open ? "" : "disabled"} required><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.description || "برنامج من برامج المركز")}</small></span></label>`;
+    }).join("");
     updateSubmitState();
   };
 
   const loadSettings = async () => {
     if (!window.CenterDB?.configured) {
-      statusCards.forEach(card => card.querySelector("small").textContent = "بانتظار تفعيل الاتصال بقاعدة البيانات");
+      statusContainer.querySelectorAll("small").forEach(item => { item.textContent = "بانتظار تفعيل الاتصال بقاعدة البيانات"; });
       showAlert(window.CenterDB?.configError || "خدمة التسجيل غير مفعلة بعد.", "warning");
       return;
     }
 
     const { data, error } = await CenterDB.client
       .from("registration_settings")
-      .select("program,title,is_open,closed_message,opens_at,closes_at");
+      .select("*");
 
     if (error) {
       showAlert("تعذر التحقق من حالة التسجيل حاليًا. يرجى المحاولة لاحقًا.", "error");
       return;
     }
 
-    settings = Object.fromEntries(data.map(item => [item.program, item]));
-    paintSettings();
-    if (!data.some(isProgramOpen)) {
+    const visibleItems = (data || []).filter(item => !item.is_archived).sort((a,b) => (a.sort_order ?? 100) - (b.sort_order ?? 100) || String(a.title).localeCompare(String(b.title), "ar"));
+    settings = Object.fromEntries(visibleItems.map(item => [item.program, item]));
+    paintSettings(visibleItems);
+    if (!visibleItems.some(isProgramOpen)) {
       showAlert("التسجيل مغلق حاليًا في جميع البرامج، وسيُعلن عن فتحه لاحقًا.", "info");
     }
   };
 
-  programInputs.forEach(input => input.addEventListener("change", updateSubmitState));
+  choiceContainer.addEventListener("change", updateSubmitState);
 
   form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -89,9 +93,9 @@
     if (!form.reportValidity()) return;
     if (form.elements.website.value) return;
 
-    const program = form.elements.program.value;
+    const program = selectedProgram();
     if (!isProgramOpen(settings[program])) {
-      showAlert(`التسجيل في ${programLabels[program] || "هذا البرنامج"} مغلق حاليًا.`, "warning");
+      showAlert(`برنامج «${settings[program]?.title || "البرنامج المحدد"}» مغلق حاليًا.`, "warning");
       return;
     }
 

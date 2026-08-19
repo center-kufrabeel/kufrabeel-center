@@ -13,6 +13,7 @@
 7. شغّل كامل الملف `supabase/video-library.sql` مرة واحدة لإضافة المكتبة المرئية وإدارتها والتحديث اللحظي الخاص بها.
 8. شغّل كامل الملف `supabase/owner-settings.sql` مرة واحدة ليتمكن مالك النظام وحده من تعديل روابط التواصل.
 9. شغّل كامل الملف `supabase/owner-controls.sql` مرة واحدة لتفعيل الصيانة، ومنع الإدارة أثناءها، وإنهاء الجلسات، وسياسة الاحتفاظ بالتسجيلات.
+10. شغّل كامل الملف `supabase/dynamic-registration-programs.sql` مرة واحدة للسماح بإضافة أنواع تسجيل جديدة من لوحة الإدارة.
 
 تظهر رسالة نجاح في نهاية كل ملف. بعد الملف الأخير يجب أن تظهر العبارة `Owner controls are ready`؛ عندها تكون أدوات المالك الجديدة جاهزة.
 
@@ -75,6 +76,7 @@ on conflict (id) do update set full_name = excluded.full_name, role = excluded.r
 - تفعيل المكتبة المرئية: `supabase/video-library.sql`
 - إعدادات التواصل الخاصة بالمالك: `supabase/owner-settings.sql`
 - الصيانة وتحكم المالك: `supabase/owner-controls.sql`
+- أنواع التسجيل الديناميكية: `supabase/dynamic-registration-programs.sql`
 - نموذج التسجيل: `registration.html` و`assets/js/registration.js`
 - لوحة الإدارة: `admin.html` و`assets/js/admin.js`
 - عرض المحتوى للزوار: `assets/js/public-content.js`

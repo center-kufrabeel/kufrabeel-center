@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  if (location.search) history.replaceState(null, document.title, `${location.pathname}${location.hash}`);
+
   const db = window.CenterDB?.client;
   const setup = document.getElementById("adminSetup");
   const loginSection = document.getElementById("adminLogin");
@@ -8,16 +10,17 @@
   const loginForm = document.getElementById("adminLoginForm");
   const loginAlert = document.getElementById("loginAlert");
   const adminAlert = document.getElementById("adminAlert");
-  const programLabels = { permanent: "النادي الدائم", tajweed: "دورات التجويد" };
+  const defaultProgramLabels = { permanent: "التسجيل في النادي الدائم", tajweed: "التسجيل في دورات التجويد" };
   const genderLabels = { male: "ذكر", female: "أنثى" };
   const statusLabels = { new: "جديد", reviewed: "تمت المراجعة", accepted: "مقبول", rejected: "مرفوض" };
   const auditActionLabels = { INSERT: "إضافة", UPDATE: "تعديل", DELETE: "حذف", LOGIN: "دخول", EXPORT: "تصدير", RESTORE: "استعادة" };
   const auditEntityLabels = { profiles: "الحسابات", site_settings: "إعدادات التواصل", system_controls: "تحكم المالك", registration_settings: "إعدادات التسجيل", registrations: "طلبات التسجيل", groups: "المجموعات", group_media: "مرفقات المجموعات", news: "الأخبار", slider_items: "السلايد شو", video_items: "المكتبة المرئية", resources: "الملفات العامة", backup: "النسخ الاحتياطي" };
   const loginAliases = { owner: "mohammadalfaqeeh73@gmail.com", admin: "loordmohammad79@gmail.com" };
-  const state = { profile: null, session: null, ownerSettings: null, systemControls: null, registrations: [], groups: [], news: [], slider: [], videos: [], resources: [], media: [], activity: [], trash: [] };
+  const state = { profile: null, session: null, ownerSettings: null, systemControls: null, registrationSettings: [], registrations: [], groups: [], news: [], slider: [], videos: [], resources: [], media: [], activity: [], trash: [] };
   let realtimeChannel = null;
 
   const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
+  const programTitle = program => state.registrationSettings.find(item => item.program === program)?.title || defaultProgramLabels[program] || program || "برنامج غير محدد";
   const formatDate = value => value ? new Intl.DateTimeFormat("ar-JO", { dateStyle: "medium" }).format(new Date(value)) : "—";
   const formatDateTime = value => value ? new Intl.DateTimeFormat("ar-JO", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)) : "—";
   const youtubeIdFromUrl = value => {
@@ -121,9 +124,11 @@
   };
 
   const loadSettings = async () => {
-    const { data, error } = await db.from("registration_settings").select("*").order("program");
+    const { data, error } = await db.from("registration_settings").select("*");
     if (error) throw error;
-    document.getElementById("registrationSwitches").innerHTML = data.map(item => {
+    state.registrationSettings = (data || []).sort((a,b) => (a.sort_order ?? 100) - (b.sort_order ?? 100) || String(a.title).localeCompare(String(b.title), "ar"));
+    const activeSettings = state.registrationSettings.filter(item => !item.is_archived);
+    document.getElementById("registrationSwitches").innerHTML = activeSettings.map(item => {
       const effective = isEffectivelyOpen(item);
       const scheduleText = item.opens_at || item.closes_at
         ? `${item.opens_at ? `يفتح: ${formatDateTime(item.opens_at)}` : "مفتوح من الآن"} · ${item.closes_at ? `يغلق: ${formatDateTime(item.closes_at)}` : "دون موعد إغلاق"}`
@@ -133,7 +138,12 @@
         <small class="schedule-summary">${escapeHtml(scheduleText)}</small>
         <div class="schedule-fields"><label><span>موعد الفتح (اختياري)</span><input type="datetime-local" data-opens-at value="${toLocalInput(item.opens_at)}"></label><label><span>موعد الإغلاق (اختياري)</span><input type="datetime-local" data-closes-at value="${toLocalInput(item.closes_at)}"></label><button class="btn btn-outline schedule-save" type="button" data-save-schedule="${item.program}">حفظ المواعيد</button></div>
       </div>`;
-    }).join("");
+    }).join("") || '<p class="empty-message">لا توجد أنواع تسجيل مضافة.</p>';
+    const filter = document.getElementById("registrationProgramFilter");
+    const selected = filter.value;
+    filter.innerHTML = `<option value="">كل البرامج</option>${state.registrationSettings.map(item => `<option value="${escapeHtml(item.program)}">${escapeHtml(item.title)}</option>`).join("")}`;
+    if ([...filter.options].some(option => option.value === selected)) filter.value = selected;
+    if (state.registrations.length) renderRegistrations();
   };
 
   const loadRegistrations = async () => {
@@ -150,7 +160,7 @@
   const renderRegistrations = () => {
     const rows = filteredRegistrations();
     document.getElementById("registrationsTable").innerHTML = rows.length ? rows.map(item => `<tr>
-      <td><strong>${escapeHtml(item.full_name)}</strong></td><td>${genderLabels[item.gender]}</td><td>${escapeHtml(item.birth_date)}</td><td dir="ltr">${escapeHtml(item.phone)}</td><td>${escapeHtml(item.guardian_name)}</td><td>${programLabels[item.program]}</td>
+      <td><strong>${escapeHtml(item.full_name)}</strong></td><td>${genderLabels[item.gender]}</td><td>${escapeHtml(item.birth_date)}</td><td dir="ltr">${escapeHtml(item.phone)}</td><td>${escapeHtml(item.guardian_name)}</td><td>${escapeHtml(programTitle(item.program))}</td>
       <td><select class="table-status" data-registration-status="${item.id}">${Object.entries(statusLabels).map(([key,label]) => `<option value="${key}" ${item.status === key ? "selected" : ""}>${label}</option>`).join("")}</select></td>
       <td><textarea class="registration-note" rows="2" data-registration-notes="${item.id}" placeholder="ملاحظة داخلية...">${escapeHtml(item.admin_notes || "")}</textarea></td>
       <td>${formatDate(item.created_at)}</td><td><button class="danger-text-button" type="button" data-delete-registration="${item.id}">نقل للسلة</button></td></tr>`).join("") : '<tr><td colspan="10" class="empty-cell">لا توجد طلبات مطابقة.</td></tr>';
@@ -201,7 +211,7 @@
   };
 
   const trashDefinitions = {
-    registrations: { label: "طلب تسجيل", title: item => `${item.full_name} — ${programLabels[item.program]}`, path: null },
+    registrations: { label: "طلب تسجيل", title: item => `${item.full_name} — ${programTitle(item.program)}`, path: null },
     groups: { label: "مجموعة", title: item => item.name, path: "image_path" },
     group_media: { label: "مرفق مجموعة", title: item => item.title, path: "file_path" },
     news: { label: "خبر", title: item => item.title, path: "image_path" },
@@ -292,6 +302,41 @@
   });
   document.getElementById("adminLogout").addEventListener("click", async () => { sessionStorage.clear(); await db.auth.signOut(); location.reload(); });
 
+  const registrationProgramForm = document.getElementById("registrationProgramForm");
+  registrationProgramForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    try {
+      const values = Object.fromEntries(new FormData(registrationProgramForm));
+      const title = values.title.trim();
+      const description = values.description.trim();
+      const closedMessage = values.closed_message.trim();
+      if (state.registrationSettings.some(item => item.title.trim().toLowerCase() === title.toLowerCase() && !item.is_archived)) throw new Error("يوجد نوع تسجيل بالاسم نفسه.");
+      const highestOrder = Math.max(0, ...state.registrationSettings.map(item => Number(item.sort_order || 0)));
+      const payload = {
+        program: `program-${crypto.randomUUID()}`,
+        title,
+        description,
+        closed_message: closedMessage,
+        is_open: false,
+        is_archived: false,
+        sort_order: highestOrder + 10,
+        created_by: state.profile.id,
+        updated_by: state.profile.id
+      };
+      const button = registrationProgramForm.querySelector("button[type='submit']");
+      button.disabled = true;
+      const { error } = await db.from("registration_settings").insert(payload);
+      button.disabled = false;
+      if (error) throw error;
+      registrationProgramForm.reset();
+      await loadSettings();
+      showAdminAlert("تمت إضافة نوع التسجيل. بقي مغلقًا حتى تقوم بفتحه أو تحديد موعده.");
+    } catch (error) {
+      registrationProgramForm.querySelector("button[type='submit']").disabled = false;
+      showAdminAlert(error.message, "error");
+    }
+  });
+
   document.getElementById("registrationSwitches").addEventListener("click", async event => {
     const toggle = event.target.closest("[data-toggle-program]"); const save = event.target.closest("[data-save-schedule]");
     try {
@@ -310,9 +355,10 @@
 
   document.getElementById("exportRegistrations").addEventListener("click", async () => {
     if (!window.XLSX) { showAdminAlert("تعذر تحميل أداة Excel.", "error"); return; }
-    const toRow = item => ({ "الاسم الرباعي": item.full_name, "الجنس": genderLabels[item.gender], "تاريخ الميلاد": item.birth_date, "رقم الهاتف": item.phone, "ولي الأمر": item.guardian_name, "البرنامج": programLabels[item.program], "الحالة": statusLabels[item.status], "ملاحظات الإدارة": item.admin_notes || "", "تاريخ التسجيل": formatDate(item.created_at) });
+    const toRow = item => ({ "الاسم الرباعي": item.full_name, "الجنس": genderLabels[item.gender], "تاريخ الميلاد": item.birth_date, "رقم الهاتف": item.phone, "ولي الأمر": item.guardian_name, "البرنامج": programTitle(item.program), "الحالة": statusLabels[item.status], "ملاحظات الإدارة": item.admin_notes || "", "تاريخ التسجيل": formatDate(item.created_at) });
     const males = state.registrations.filter(item => item.gender === "male").map(toRow); const females = state.registrations.filter(item => item.gender === "female").map(toRow);
-    const statistics = [{ "البيان": "إجمالي التسجيلات", "العدد": state.registrations.length }, { "البيان": "إجمالي الذكور", "العدد": males.length }, { "البيان": "إجمالي الإناث", "العدد": females.length }, ...Object.keys(programLabels).flatMap(program => [{ "البيان": `${programLabels[program]} - ذكور`, "العدد": state.registrations.filter(x => x.program === program && x.gender === "male").length }, { "البيان": `${programLabels[program]} - إناث`, "العدد": state.registrations.filter(x => x.program === program && x.gender === "female").length }])];
+    const programKeys = [...new Set([...state.registrationSettings.map(item => item.program), ...state.registrations.map(item => item.program)])];
+    const statistics = [{ "البيان": "إجمالي التسجيلات", "العدد": state.registrations.length }, { "البيان": "إجمالي الذكور", "العدد": males.length }, { "البيان": "إجمالي الإناث", "العدد": females.length }, ...programKeys.flatMap(program => [{ "البيان": `${programTitle(program)} - ذكور`, "العدد": state.registrations.filter(x => x.program === program && x.gender === "male").length }, { "البيان": `${programTitle(program)} - إناث`, "العدد": state.registrations.filter(x => x.program === program && x.gender === "female").length }])];
     const workbook = XLSX.utils.book_new();
     [[males,"الذكور"],[females,"الإناث"],[statistics,"الإحصائيات"]].forEach(([rows,name]) => { const sheet = XLSX.utils.json_to_sheet(rows.length ? rows : [{ "لا توجد بيانات": "" }]); sheet["!views"] = [{ rightToLeft: true }]; sheet["!cols"] = Object.keys(rows[0] || { "لا توجد بيانات": "" }).map(() => ({ wch: 24 })); XLSX.utils.book_append_sheet(workbook, sheet, name); });
     XLSX.writeFile(workbook, `تسجيلات-مركز-كفرأبيل-${new Date().toISOString().slice(0,10)}.xlsx`); await logEvent("EXPORT", "registrations", `تصدير ${state.registrations.length} طلبًا إلى Excel`);
